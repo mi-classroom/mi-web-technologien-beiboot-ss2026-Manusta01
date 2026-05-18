@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pose Demo</title>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="stage">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+      </section>
+
+      <aside class="panel">
+        <h1>Live-Körperdaten</h1>
+        <div id="status">Initialisiere…</div>
+        <div id="metrics"></div>
+        <pre id="raw"></pre>
+      </aside>
+    </main>
+  </body>
+</html>
