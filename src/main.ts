@@ -140,6 +140,7 @@ async function main() {
   } catch (error) {
     statusEl.textContent = 'Fehler beim Starten der Demo'
     rawEl.textContent = error instanceof Error ? error.message : String(error)
+    console.log('Error during initialization:', error)
   }
 }
 
