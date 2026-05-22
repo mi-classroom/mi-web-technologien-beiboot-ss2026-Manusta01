@@ -1,14 +1,33 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Qff1715V)
-# Web Technologien // begleitendes Projekt Sommersemester 2026
-Zum Modul Web Technologien gibt es ein begleitendes Projekt. Im Rahmen dieses Projekts werden wir von Veranstaltung zu Veranstaltung ein Projekt sukzessive weiter entwickeln und uns im Rahmen der Veranstaltung den Fortschritt anschauen, Code Reviews machen und Entwicklungsschritte vorstellen und diskutieren.
+# Beiboot — Web-Technologien (Demoprojekt)
 
-Als organisatorischen Rahmen für das Projekt nutzen wir GitHub Classroom. Inhaltlich befassen wir uns mit einer  Client-Server Anwendung mit deren Hilfe IPTC Metadaten von Bildern schnell und einfach gepflegt werden können.
+## Kurzbeschreibung
 
-Dokumentieren Sie in diesem Beibootprojekt Ihre Entscheidungen gewissenhaft unter Zuhilfenahme von [Architectual Decision Records](https://adr.github.io) (ADR).
+Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-Erkennung im Browser (TypeScript, Vite). Es demonstriert die Integration von Mediapipe-ähnlichen Modelle, Anzeige von Landmarken und eine einfache Entwicklungs- sowie Dokumentationsstruktur (ADR).
 
-Hier ein paar ADR Beispiele aus dem letzten Semestern:
-- https://github.com/mi-classroom/mi-web-technologien-beiboot-ss2022-Moosgloeckchen/tree/main/docs/decisions
-- https://github.com/mi-classroom/mi-web-technologien-beiboot-ss2022-mweiershaeuser/tree/main/adr
-- https://github.com/mi-classroom/mi-web-technologien-beiboot-ss2022-twobiers/tree/main/adr
+## Wichtigste Merkmale
 
-Halten Sie die Anwendung, gerade in der Anfangsphase möglichst einfach, schlank und leichtgewichtig (KISS).
+- Live-Webcam-Demo mit Pose/Landmark-Visualisierung
+- Implementiert in TypeScript + Vite
+
+## Voraussetzungen
+
+- Node.js >= 23
+- npm oder yarn
+
+## Schnellstart (Entwicklung)
+
+Installieren und starten:
+
+```bash
+npm install
+npm run dev
+```
+
+Öffne anschließend `http://localhost:5173` im Browser (Vite-Standardport) oder folge der Konsole.
+
+## Build für Produktion
+
+```bash
+npm run build
+npm run preview
+```
