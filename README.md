@@ -12,7 +12,7 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 
 ## Dokumentation
 
-- [Gestenvokabular und Bewertung](docs/gesture-vocabulary.md)
+- [Gestenvokabular und Bewertung](docs/gestures.md)
 - [ADR: MediaPipe Pose Landmarker](docs/adr/001-mediapipe-pose-landmarker.md)
 
 ## Voraussetzungen
