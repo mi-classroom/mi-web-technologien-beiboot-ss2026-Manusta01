@@ -1,6 +1,9 @@
 import './style.css'
-import { FilesetResolver, PoseLandmarker, DrawingUtils, NormalizedLandmark } from '@mediapipe/tasks-vision'
-import { POSE_LANDMARK_NAMES } from './landmark_names'
+import { PoseLandmarker, NormalizedLandmark } from '@mediapipe/tasks-vision'
+import { GestureDebug, labelForGesture, evaluateGesture, drawGestureHud, HOLD_TIME_MS } from './gestures/gestures'
+import { createPoseLandmarker, detectPoseForVideo } from './landmarks/inference'
+import { drawPoseFrame } from './landmarks/render'
+import { toRawDebugText } from './debug/rawFormatter'
 
 const video = document.querySelector<HTMLVideoElement>('#video')!
 const canvas = document.querySelector<HTMLCanvasElement>('#overlay')!
@@ -13,6 +16,20 @@ let poseLandmarker: PoseLandmarker | null = null
 let lastVideoTime = -1
 let lastFrameAt = performance.now()
 let fps = 0
+
+let lastDebug: GestureDebug = {
+  activeGesture: 'NONE',
+  candidateGesture: 'NONE',
+  candidateHoldMs: 0,
+  cooldownMs: 0,
+  armed: false,
+  inNeutral: false,
+  maxAbsDx: 0,
+  shoulderSpan: 0,
+  dynamicDxThreshold: 0,
+  rightArm: null,
+  leftArm: null,
+}
 
 async function setupCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
@@ -35,23 +52,7 @@ async function setupCamera() {
 
 async function setupPose() {
   statusEl.textContent = 'Lade MediaPipe…'
-
-  const vision = await FilesetResolver.forVisionTasks(
-    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-  )
-
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
-    },
-    runningMode: 'VIDEO',
-    numPoses: 1,
-    minPoseDetectionConfidence: 0.5,
-    minPosePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-    outputSegmentationMasks: false,
-  })
+  poseLandmarker = await createPoseLandmarker()
 
   statusEl.textContent = 'Bereit'
 }
@@ -61,71 +62,48 @@ function resizeCanvas() {
   canvas.height = video.videoHeight
 }
 
-function updateMetrics(inferenceMs: number, landmarkCount: number) {
+function updateMetrics(inferenceMs: number, landmarkCount: number, debug: GestureDebug) {
   const now = performance.now()
   const delta = now - lastFrameAt
   fps = delta > 0 ? 1000 / delta : 0
   lastFrameAt = now
+
+  const candidateLabel = labelForGesture(debug.candidateGesture)
+  const activeLabel = labelForGesture(debug.activeGesture)
 
   metricsEl.innerHTML = `
     <div>FPS: ${fps.toFixed(1)}</div>
     <div>Inference: ${inferenceMs.toFixed(1)} ms</div>
     <div>Landmarks: ${landmarkCount}</div>
     <div>Video: ${video.videoWidth}x${video.videoHeight}</div>
+    <div>Aktive Geste: ${activeLabel}</div>
+    <div>Kandidat: ${candidateLabel} (${debug.candidateHoldMs.toFixed(0)} / ${HOLD_TIME_MS} ms)</div>
+    <div>Cooldown: ${debug.cooldownMs.toFixed(0)} ms</div>
+    <div>Armed: ${debug.armed ? 'ja' : 'nein'}, Neutral: ${debug.inNeutral ? 'ja' : 'nein'}, max|dx|: ${debug.maxAbsDx.toFixed(3)}</div>
+    <div>Schulterbreite: ${debug.shoulderSpan.toFixed(3)}, X-Schwelle: ${debug.dynamicDxThreshold.toFixed(3)}</div>
   `
 }
 
 function drawResults(landmarks?: NormalizedLandmark[][]) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-
-  if (!landmarks || landmarks.length === 0) {
-    return
-  }
-
-  const drawingUtils = new DrawingUtils(ctx)
-
-  for (const pose of landmarks) {
-    drawingUtils.drawLandmarks(pose, {
-      radius: 3,
-      color: '#00ff88',
-      fillColor: '#00ff88',
-    })
-  }
+  drawPoseFrame(ctx, canvas, video, landmarks)
+  drawGestureHud(lastDebug)
 }
 
 function showRawData(landmarks?: NormalizedLandmark[][]) {
-  if (!landmarks || landmarks.length === 0) {
-    rawEl.textContent = 'Keine Pose erkannt'
-    return
-  }
-
-  const firstPose = landmarks[0]
-  const reduced = firstPose.map((lm, index) => ({
-    index,
-    name: POSE_LANDMARK_NAMES[index],
-    x: Number(lm.x.toFixed(4)),
-    y: Number(lm.y.toFixed(4)),
-    z: Number(lm.z.toFixed(4)),
-    visibility: lm.visibility !== undefined ? Number(lm.visibility.toFixed(4)) : null,
-  }))
-
-  rawEl.textContent = JSON.stringify(reduced, null, 2)
+  rawEl.textContent = toRawDebugText(landmarks, lastDebug)
 }
-
 async function renderLoop() {
   if (!poseLandmarker) return
 
   if (video.currentTime !== lastVideoTime) {
     lastVideoTime = video.currentTime
 
-    const started = performance.now()
-    const result = poseLandmarker.detectForVideo(video, started)
-    const inferenceMs = performance.now() - started
+    const { result, inferenceMs } = detectPoseForVideo(poseLandmarker, video)
 
+    lastDebug = evaluateGesture(result.landmarks)
     drawResults(result.landmarks)
     showRawData(result.landmarks)
-    updateMetrics(inferenceMs, result.landmarks?.[0]?.length ?? 0)
+    updateMetrics(inferenceMs, result.landmarks?.[0]?.length ?? 0, lastDebug)
   }
 
   requestAnimationFrame(renderLoop)

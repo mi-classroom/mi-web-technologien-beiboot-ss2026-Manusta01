@@ -1,3 +1,5 @@
+import { NormalizedLandmark } from '@mediapipe/tasks-vision'
+
 export const POSE_LANDMARK_NAMES = [
   'nose',
   'left_eye_inner',
@@ -33,3 +35,14 @@ export const POSE_LANDMARK_NAMES = [
   'left_foot_index',
   'right_foot_index',
 ]
+
+export function reducePoseLandmarks(firstPose: NormalizedLandmark[]) {
+  return firstPose.map((lm, index) => ({
+    index,
+    name: POSE_LANDMARK_NAMES[index],
+    x: Number(lm.x.toFixed(4)),
+    y: Number(lm.y.toFixed(4)),
+    z: Number(lm.z.toFixed(4)),
+    visibility: lm.visibility !== undefined ? Number(lm.visibility.toFixed(4)) : null,
+  }))
+}
