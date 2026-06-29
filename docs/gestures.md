@@ -28,9 +28,22 @@ Begruendung:
 - Beide sind symmetrisch und mit denselben Landmark-Typen erfassbar.
 - Die Erkennung ist mit einer einfachen X-Achsen-Heuristik robust umsetzbar.
 
-## Implementierte Detektionslogik
+## Implementierte Gesten (Gesture Library)
 
-Die konkrete Erkennung steckt in `src/gestures/gestures.ts` und wird in `src/main.ts` visualisiert.
+Die Erkennung liegt in `src/gesture-library/` und ist von der Demo getrennt. Öffentliche API: [gesture-library-api.md](gesture-library-api.md).
+
+| Geste            | Plugin                          | Erkennungsprinzip                                   |
+| ---------------- | ------------------------------- | --------------------------------------------------- |
+| Gehe vor         | `gestures/gehe-vor.ts`          | Dominantes `dx` nach rechts                         |
+| Gehe zurück      | `gestures/gehe-zurueck.ts`      | Dominantes `dx` nach links                          |
+| Pause / Stop     | `gestures/pause-stop.ts`        | Beide Handgelenke oberhalb der Schultern            |
+| Nächster Eintrag | `gestures/naechster-eintrag.ts` | Rechtes Handgelenk deutlich über Schulter (Y-Achse) |
+
+Die Demo in `src/main.ts` nutzt `createDefaultGestureRecognizer()` und visualisiert Ergebnisse über `src/demo/gestureUi.ts`.
+
+## Implementierte Detektionslogik (Stabilisierung)
+
+Die Stabilisierung (Hold, Grace, Cooldown, Arming) steckt in `src/gesture-library/stabilization.ts`. Gesten-spezifische Regeln liegen in den jeweiligen Plugins unter `src/gesture-library/gestures/`.
 
 Verwendete Regeln und Schwellwerte:
 

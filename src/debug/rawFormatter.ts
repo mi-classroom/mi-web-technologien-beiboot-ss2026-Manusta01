@@ -1,5 +1,5 @@
 import { NormalizedLandmark } from '@mediapipe/tasks-vision'
-import { GestureDebug, labelForGesture } from '../gestures/gestures'
+import { GestureDebug } from '../gesture-library'
 import { reducePoseLandmarks } from '../landmarks/landmarks'
 
 function serializeArmFeatures(arm: GestureDebug['rightArm']) {
@@ -17,7 +17,11 @@ function serializeArmFeatures(arm: GestureDebug['rightArm']) {
   }
 }
 
-export function toRawDebugText(landmarks: NormalizedLandmark[][] | undefined, debug: GestureDebug): string {
+export function toRawDebugText(
+  landmarks: NormalizedLandmark[][] | undefined,
+  debug: GestureDebug,
+  labelFn: (name: string) => string
+): string {
   if (!landmarks || landmarks.length === 0) {
     return 'Keine Pose erkannt'
   }
@@ -25,8 +29,8 @@ export function toRawDebugText(landmarks: NormalizedLandmark[][] | undefined, de
   return JSON.stringify(
     {
       gestureDebug: {
-        activeGesture: labelForGesture(debug.activeGesture),
-        candidateGesture: labelForGesture(debug.candidateGesture),
+        activeGesture: labelFn(debug.activeGesture),
+        candidateGesture: labelFn(debug.candidateGesture),
         candidateHoldMs: Number(debug.candidateHoldMs.toFixed(1)),
         cooldownMs: Number(debug.cooldownMs.toFixed(1)),
         armed: debug.armed,

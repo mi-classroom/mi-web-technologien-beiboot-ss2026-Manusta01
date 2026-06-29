@@ -1,6 +1,7 @@
 import './style.css'
 import { PoseLandmarker, NormalizedLandmark } from '@mediapipe/tasks-vision'
-import { GestureDebug, labelForGesture, evaluateGesture, drawGestureHud, HOLD_TIME_MS } from './gestures/gestures'
+import { createDefaultGestureRecognizer, GestureDebug } from './gesture-library'
+import { drawGestureHud, updateGestureStatus } from './demo/gestureUi'
 import { createPoseLandmarker, detectPoseForVideo } from './landmarks/inference'
 import { drawPoseFrame } from './landmarks/render'
 import { toRawDebugText } from './debug/rawFormatter'
@@ -11,6 +12,8 @@ const statusEl = document.querySelector<HTMLDivElement>('#status')!
 const metricsEl = document.querySelector<HTMLDivElement>('#metrics')!
 const rawEl = document.querySelector<HTMLPreElement>('#raw')!
 const ctx = canvas.getContext('2d')!
+
+const recognizer = createDefaultGestureRecognizer()
 
 let poseLandmarker: PoseLandmarker | null = null
 let lastVideoTime = -1
@@ -68,8 +71,9 @@ function updateMetrics(inferenceMs: number, landmarkCount: number, debug: Gestur
   fps = delta > 0 ? 1000 / delta : 0
   lastFrameAt = now
 
-  const candidateLabel = labelForGesture(debug.candidateGesture)
-  const activeLabel = labelForGesture(debug.activeGesture)
+  const holdTimeMs = recognizer.getHoldTimeMs()
+  const candidateLabel = recognizer.labelFor(debug.candidateGesture)
+  const activeLabel = recognizer.labelFor(debug.activeGesture)
 
   metricsEl.innerHTML = `
     <div>FPS: ${fps.toFixed(1)}</div>
@@ -77,7 +81,7 @@ function updateMetrics(inferenceMs: number, landmarkCount: number, debug: Gestur
     <div>Landmarks: ${landmarkCount}</div>
     <div>Video: ${video.videoWidth}x${video.videoHeight}</div>
     <div>Aktive Geste: ${activeLabel}</div>
-    <div>Kandidat: ${candidateLabel} (${debug.candidateHoldMs.toFixed(0)} / ${HOLD_TIME_MS} ms)</div>
+    <div>Kandidat: ${candidateLabel} (${debug.candidateHoldMs.toFixed(0)} / ${holdTimeMs} ms)</div>
     <div>Cooldown: ${debug.cooldownMs.toFixed(0)} ms</div>
     <div>Armed: ${debug.armed ? 'ja' : 'nein'}, Neutral: ${debug.inNeutral ? 'ja' : 'nein'}, max|dx|: ${debug.maxAbsDx.toFixed(3)}</div>
     <div>Schulterbreite: ${debug.shoulderSpan.toFixed(3)}, X-Schwelle: ${debug.dynamicDxThreshold.toFixed(3)}</div>
@@ -86,12 +90,13 @@ function updateMetrics(inferenceMs: number, landmarkCount: number, debug: Gestur
 
 function drawResults(landmarks?: NormalizedLandmark[][]) {
   drawPoseFrame(ctx, canvas, video, landmarks)
-  drawGestureHud(lastDebug)
+  drawGestureHud(lastDebug, recognizer.labelFor.bind(recognizer), recognizer.getHoldTimeMs(), ctx)
 }
 
 function showRawData(landmarks?: NormalizedLandmark[][]) {
-  rawEl.textContent = toRawDebugText(landmarks, lastDebug)
+  rawEl.textContent = toRawDebugText(landmarks, lastDebug, recognizer.labelFor.bind(recognizer))
 }
+
 async function renderLoop() {
   if (!poseLandmarker) return
 
@@ -99,8 +104,10 @@ async function renderLoop() {
     lastVideoTime = video.currentTime
 
     const { result, inferenceMs } = detectPoseForVideo(poseLandmarker, video)
+    const gestureResult = recognizer.process(result.landmarks, performance.now())
 
-    lastDebug = evaluateGesture(result.landmarks)
+    lastDebug = gestureResult.debug
+    updateGestureStatus(statusEl, lastDebug, recognizer.labelFor.bind(recognizer), recognizer.getHoldTimeMs())
     drawResults(result.landmarks)
     showRawData(result.landmarks)
     updateMetrics(inferenceMs, result.landmarks?.[0]?.length ?? 0, lastDebug)
