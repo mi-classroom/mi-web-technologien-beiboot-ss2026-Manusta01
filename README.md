@@ -8,12 +8,15 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 
 - Live-Webcam-Demo mit Pose/Landmark-Visualisierung
 - Implementiert in TypeScript + Vite
-- Prototypische Gestenerkennung auf Basis der Pose-Landmarks mit sichtbarer Textausgabe in der Demo
+- Prototypische Gestenerkennung auf Basis der Pose-Landmarks mit erweiterbarer Gesture Library
 
 ## Dokumentation
 
 - [Gestenvokabular und Bewertung](docs/gestures.md)
+- [Gesture Library API](docs/gesture-library-api.md)
 - [ADR: MediaPipe Pose Landmarker](docs/adr/001-mediapipe-pose-landmarker.md)
+- [ADR: Gesture Library Architektur](docs/adr/002-gesture-library-architecture.md)
+- [ADR: Auswahl weiterer Gesten](docs/adr/003-gesture-selection.md)
 
 ## Voraussetzungen
 
