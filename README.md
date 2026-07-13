@@ -9,6 +9,7 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 - Live-Webcam-Demo mit Pose/Landmark-Visualisierung
 - Implementiert in TypeScript + Vite
 - Prototypische Gestenerkennung auf Basis der Pose-Landmarks mit erweiterbarer Gesture Library
+- Eigenständige Gesten-Präsentation (`apps/presentation-demo/`, Issue #4)
 
 ## Dokumentation
 
@@ -17,6 +18,8 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 - [ADR: MediaPipe Pose Landmarker](docs/adr/001-mediapipe-pose-landmarker.md)
 - [ADR: Gesture Library Architektur](docs/adr/002-gesture-library-architecture.md)
 - [ADR: Auswahl weiterer Gesten](docs/adr/003-gesture-selection.md)
+- [ADR: API zum Auflisten registrierter Gesten](docs/adr/004-gesture-enumeration-api.md)
+- [Gesten-Präsentation (Issue #4)](apps/presentation-demo/README.md)
 
 ## Voraussetzungen
 
@@ -32,7 +35,13 @@ npm install
 npm run dev
 ```
 
-Öffne anschließend `http://localhost:5173` im Browser (Vite-Standardport) oder folge der Konsole.
+Gesten-Präsentation (Issue #4):
+
+```bash
+npm run dev:presentation
+```
+
+Öffne anschließend `http://localhost:5173` (Pose-Demo) bzw. `http://localhost:5174` (Präsentation) im Browser.
 
 ## Build für Produktion
 

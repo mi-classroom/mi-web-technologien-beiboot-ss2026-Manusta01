@@ -60,11 +60,6 @@ async function setupPose() {
   statusEl.textContent = 'Bereit'
 }
 
-function resizeCanvas() {
-  canvas.width = video.videoWidth
-  canvas.height = video.videoHeight
-}
-
 function updateMetrics(inferenceMs: number, landmarkCount: number, debug: GestureDebug) {
   const now = performance.now()
   const delta = now - lastFrameAt
@@ -119,7 +114,6 @@ async function renderLoop() {
 async function main() {
   try {
     await setupCamera()
-    resizeCanvas()
     await setupPose()
     requestAnimationFrame(renderLoop)
   } catch (error) {

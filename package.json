@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:presentation": "npm run dev --workspace=@beiboot/presentation-demo",
     "build": "tsc && vite build",
+    "build:presentation": "npm run build --workspace=@beiboot/presentation-demo",
     "preview": "vite preview",
     "prepare": "husky"
   },
@@ -31,6 +33,10 @@
       "prettier --write"
     ]
   },
+  "workspaces": [
+    "src/gesture-library",
+    "apps/*"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "npx lint-staged"

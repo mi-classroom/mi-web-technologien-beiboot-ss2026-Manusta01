@@ -67,6 +67,11 @@ export type GestureEvent = {
   timestamp: number
 }
 
+export type RegisteredGesture = {
+  name: string
+  label: string
+}
+
 export type RecognizerConfig = {
   holdTimeMs?: number
   cooldownMs?: number

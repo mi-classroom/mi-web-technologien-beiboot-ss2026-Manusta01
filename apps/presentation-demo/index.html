@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gesten-Präsentation</title>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <main class="layout">
+      <section class="slide-panel">
+        <header class="slide-header">
+          <p class="eyebrow">Gesten-gesteuerte Präsentation</p>
+          <div id="slide-counter" class="slide-counter"></div>
+        </header>
+        <article id="slide" class="slide"></article>
+        <footer id="slide-footer" class="slide-footer"></footer>
+      </section>
+
+      <aside class="control-panel">
+        <section class="camera-block">
+          <div class="camera-stage">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="overlay"></canvas>
+          </div>
+          <p id="gesture-status" class="gesture-status">Initialisiere…</p>
+        </section>
+
+        <section class="help-block">
+          <h2>Steuerung</h2>
+          <ul id="gesture-help" class="gesture-help"></ul>
+        </section>
+
+        <section class="meta-block">
+          <div id="metrics" class="metrics"></div>
+        </section>
+      </aside>
+    </main>
+  </body>
+</html>

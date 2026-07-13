@@ -90,6 +90,7 @@ const { activeGesture, candidateGesture, debug } = recognizer.process(landmarks,
 // Labels für die UI
 recognizer.labelFor(activeGesture) // z. B. 'Gehe vor'
 recognizer.getHoldTimeMs() // konfigurierte Haltezeit
+recognizer.getRegisteredGestures() // [{ name: 'GEHE_VOR', label: 'Gehe vor' }, …]
 ```
 
 ### Events
@@ -103,6 +104,16 @@ const unsubscribe = recognizer.on('gesture', (event) => {
 ```
 
 Events feuern, wenn eine Geste nach Hold-Zeit bestätigt wurde.
+
+### Registrierte Gesten auflisten
+
+```typescript
+for (const gesture of recognizer.getRegisteredGestures()) {
+  console.log(gesture.name, gesture.label)
+}
+```
+
+Nützlich für Hilfe-UI, Einstellungen oder Logging — ohne einzelne Gesture-Plugins importieren zu müssen.
 
 ## Öffentliche vs. interne API
 

@@ -7,6 +7,7 @@ import {
   NONE_GESTURE,
   PoseLandmarks,
   RecognizerConfig,
+  RegisteredGesture,
 } from './types'
 import { emptyFrameFeatures, extractFrameFeatures } from './features/pose'
 import {
@@ -97,6 +98,13 @@ export class GestureRecognizer {
 
   getHoldTimeMs(): number {
     return this.config.holdTimeMs
+  }
+
+  getRegisteredGestures(): ReadonlyArray<RegisteredGesture> {
+    return this.gestures.map((gesture) => ({
+      name: gesture.name,
+      label: gesture.label,
+    }))
   }
 
   labelFor(name: string): string {
