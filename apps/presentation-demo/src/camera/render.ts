@@ -14,7 +14,7 @@ export function drawPoseFrame(
   landmarks?: NormalizedLandmark[][],
   options: PoseDrawOptions = {}
 ): void {
-  const { mirror = true, backgroundColor = '#020407', landmarkColor = '#00ff88', landmarkRadius = 4 } = options
+  const { mirror = true, backgroundColor = '#02050a', landmarkColor = '#7cf0ff', landmarkRadius = 4 } = options
 
   if (!video.videoWidth || !video.videoHeight) {
     return

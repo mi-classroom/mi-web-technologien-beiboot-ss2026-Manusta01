@@ -1,0 +1,12 @@
+{
+  "name": "@beiboot/gesture-library",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "peerDependencies": {
+    "@mediapipe/tasks-vision": "^0.10.22"
+  }
+}

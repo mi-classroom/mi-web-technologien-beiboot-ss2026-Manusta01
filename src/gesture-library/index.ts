@@ -16,4 +16,5 @@ export type {
   GestureResult,
   PoseLandmarks,
   RecognizerConfig,
+  RegisteredGesture,
 } from './types'
