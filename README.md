@@ -19,6 +19,8 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 - [ADR: Gesture Library Architektur](docs/adr/002-gesture-library-architecture.md)
 - [ADR: Auswahl weiterer Gesten](docs/adr/003-gesture-selection.md)
 - [ADR: API zum Auflisten registrierter Gesten](docs/adr/004-gesture-enumeration-api.md)
+- [ADR: Issue #5 — Weg B Robustheit](docs/adr/005-issue5-path-b-robustness.md)
+- [Baseline-Messung Vorher/Nachher (Issue #5)](docs/baseline-measurement.md)
 - [Gesten-Präsentation (Issue #4)](apps/presentation-demo/README.md)
 
 ## Voraussetzungen
@@ -39,6 +41,12 @@ Gesten-Präsentation (Issue #4):
 
 ```bash
 npm run dev:presentation
+```
+
+Tests (Gesture Library Baseline):
+
+```bash
+npm test
 ```
 
 Öffne anschließend `http://localhost:5173` (Pose-Demo) bzw. `http://localhost:5174` (Präsentation) im Browser.

@@ -6,7 +6,7 @@ import {
   RIGHT_ELBOW,
   RIGHT_SHOULDER,
   RIGHT_WRIST,
-} from '../gesture-library/features/pose'
+} from './features/pose'
 
 function landmark(x: number, y: number, visibility = 1): NormalizedLandmark {
   return { x, y, z: 0, visibility }

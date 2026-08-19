@@ -136,6 +136,7 @@ Die Demo (`src/main.ts`, `src/demo/gestureUi.ts`) ist ein separater Consumer der
 
 ```bash
 npm test
+npm run test:watch
 ```
 
-Tests verwenden synthetische Landmark-Daten und prüfen Erkennung sowie Stabilisierung ohne Browser-DOM.
+Tests verwenden synthetische Landmark-Daten und prüfen Erkennung sowie Stabilisierung ohne Browser-DOM. Baseline-Kennzahlen: [baseline-measurement.md](../baseline-measurement.md).
