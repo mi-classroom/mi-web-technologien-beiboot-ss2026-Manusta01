@@ -84,5 +84,6 @@ export function updateMetrics(
     <div>Kandidat: ${labelFn(debug.candidateGesture)} (${debug.candidateHoldMs.toFixed(0)} / ${holdTimeMs} ms)</div>
     <div>Armed: ${debug.armed ? 'ja' : 'nein'}</div>
     <div>Cooldown: ${debug.cooldownMs.toFixed(0)} ms</div>
+    <div>Pose-Verlust: ${debug.poseLostMs > 0 ? `${debug.poseLostMs.toFixed(0)} ms` : '—'}</div>
   `
 }

@@ -44,7 +44,18 @@ const recognizer = new GestureRecognizer({
 })
 ```
 
-Alle Optionen sind optional. Fehlende Werte nutzen die Defaults aus `engine.ts`.
+Alle Optionen sind optional. Fehlende Werte nutzen die Defaults aus `engine.ts` (exportiert u. a. als `DEFAULT_HOLD_TIME_MS`, `DEFAULT_COOLDOWN_MS`, `DEFAULT_POSE_LOSS_GRACE_MS`, `DEFAULT_SMOOTHING_ALPHA`).
+
+| Option | Default | Bedeutung |
+| --- | --- | --- |
+| `holdTimeMs` | 450 | Kandidat muss so lange stabil sein |
+| `cooldownMs` | 900 | Sperrzeit nach Trigger |
+| `candidateGraceMs` | 180 | Toleranz bei kurzzeitigem Gesten-Aussetzer |
+| `poseLossGraceMs` | 200 | Tracking-Lücke, in der Kandidat/Arming erhalten bleiben |
+| `smoothingAlpha` | 0.45 | EMA-Glättung für Arm-`dx`/`dy` (`0` ≈ aus) |
+| `neutralHoldMs` | 220 | Neutrale Pose vor Arming |
+| `horizontalDxMin` / `shoulderSpanFactor` | 0.03 / 0.2 | Dynamische X-Schwelle |
+| `visibilityMin` / `elbowVisibilityMin` | 0.45 | Sichtbarkeitsgrenzen |
 
 ## Gesten registrieren
 
@@ -95,6 +106,18 @@ recognizer.getHoldTimeMs() // konfigurierte Haltezeit
 recognizer.getRegisteredGestures() // [{ name: 'GEHE_VOR', label: 'Gehe vor' }, …]
 ```
 
+### GestureDebug
+
+| Feld | Bedeutung |
+| --- | --- |
+| `activeGesture` / `candidateGesture` | Bestätigte bzw. laufende Geste |
+| `candidateHoldMs` | Wie lange der Kandidat schon gehalten wird |
+| `cooldownMs` | Verbleibende Sperrzeit |
+| `armed` / `inNeutral` | Arming-Zustand |
+| `poseLostMs` | Dauer der aktuellen Tracking-Lücke (`0`, wenn Pose da ist) |
+| `maxAbsDx` / `shoulderSpan` / `dynamicDxThreshold` | Feature-Metriken |
+| `rightArm` / `leftArm` | Arm-Features (ggf. geglättet) |
+
 ### Events
 
 ```typescript
@@ -129,10 +152,11 @@ Nützlich für Hilfe-UI, Einstellungen oder Logging — ohne einzelne Gesture-Pl
 **Intern** (nicht exportiert):
 
 - `features/pose.ts` — Landmark-Indizes, Feature-Extraktion
-- `stabilization.ts` — Hold, Grace, Cooldown, Arming
+- `smoothing.ts` — EMA-Glättung von Arm-Features
+- `stabilization.ts` — Hold, Grace, Cooldown, Arming, Pose-Verlust-Grace
 - `test-helpers.ts` — Synthetische Poses für Tests
 
-Die Demo (`src/main.ts`, `src/demo/gestureUi.ts`) ist ein separater Consumer der Library.
+Kamera/Pose-Inferenz liegt **nicht** in der Gesture Library, sondern im gemeinsamen Paket `@beiboot/pose-camera` (`src/pose-camera/`). Die Demos (`src/main.ts`, `apps/presentation-demo/`) sind separate Consumer.
 
 ## Tests
 
@@ -141,4 +165,4 @@ npm test
 npm run test:watch
 ```
 
-Tests verwenden synthetische Landmark-Daten und prüfen Erkennung sowie Stabilisierung ohne Browser-DOM. Baseline-Kennzahlen: [baseline-measurement.md](../baseline-measurement.md).
+Tests verwenden synthetische Landmark-Daten und prüfen Erkennung sowie Stabilisierung ohne Browser-DOM. Baseline-Kennzahlen: [baseline-measurement.md](baseline-measurement.md).

@@ -13,7 +13,11 @@
     "test:watch": "vitest",
     "prepare": "husky"
   },
+  "engines": {
+    "node": ">=23"
+  },
   "dependencies": {
+    "@beiboot/pose-camera": "file:src/pose-camera",
     "@mediapipe/tasks-vision": "^0.10.22"
   },
   "devDependencies": {
@@ -38,6 +42,7 @@
   },
   "workspaces": [
     "src/gesture-library",
+    "src/pose-camera",
     "apps/*"
   ],
   "husky": {

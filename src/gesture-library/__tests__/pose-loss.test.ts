@@ -71,7 +71,7 @@ describe('S4/S5 grace behaviour', () => {
       framesFor(150, undefined, 500)
     )
     const { results } = collectAllTriggers(recognizer, frames)
-    const last = results.at(-1)
+    const last = results[results.length - 1]
 
     expect(last?.debug.candidateGesture).toBe('GEHE_VOR')
     expect(last?.debug.armed).toBe(true)
@@ -86,7 +86,7 @@ describe('S4/S5 grace behaviour', () => {
       framesFor(300, undefined, 500)
     )
     const { results } = collectAllTriggers(recognizer, frames)
-    const last = results.at(-1)
+    const last = results[results.length - 1]
 
     expect(last?.debug.candidateGesture).toBe(NONE_GESTURE)
     expect(last?.debug.armed).toBe(false)

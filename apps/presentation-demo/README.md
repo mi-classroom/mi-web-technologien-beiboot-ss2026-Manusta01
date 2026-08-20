@@ -13,9 +13,12 @@ Eigenständige Demo-Anwendung, die die Gesture Library als externe Abhängigkeit
 
 ## Abhängigkeiten
 
-Die App importiert **ausschließlich** aus `@beiboot/gesture-library` (lokales Paket unter `src/gesture-library/`). Kein Zugriff auf interne Module wie `features/`, `stabilization.ts` oder einzelne Gesture-Plugins.
+Die App importiert **ausschließlich** aus:
 
-MediaPipe Pose-Inferenz liegt in `src/camera/` — das ist Anwendungs-Infrastruktur, nicht Teil der Library.
+- `@beiboot/gesture-library` — Gestenerkennung (öffentliche API)
+- `@beiboot/pose-camera` — Kamera, MediaPipe-Inferenz, Landmark-Rendering
+
+Kein Zugriff auf interne Library-Module wie `features/`, `stabilization.ts` oder einzelne Gesture-Plugins.
 
 ## Starten
 

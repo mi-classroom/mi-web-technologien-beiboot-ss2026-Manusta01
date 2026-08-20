@@ -9,7 +9,7 @@ describe('S1 — Idle false positives (K1)', () => {
     const results = runSequence(recognizer, buildNeutralWarmup(neutralPose(), 300))
 
     expect(triggers).toHaveLength(0)
-    expect(results.at(-1)?.debug.armed).toBe(true)
+    expect(results[results.length - 1]?.debug.armed).toBe(true)
   })
 
   it('measures false positives over 30 s neutral hold', () => {

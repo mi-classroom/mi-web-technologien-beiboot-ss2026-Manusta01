@@ -38,6 +38,8 @@ TensorFlow.js mit MoveNet ist eine tragfähige Alternative für Pose-Erkennung i
 
 Ein eigener Modell-Stack oder eine serverseitige Inferenz würde mehr Freiheitsgrade eröffnen, erhöht aber Entwicklungs-, Betriebs- und Debugging-Aufwand deutlich. Zusätzlich würden lokale Startbarkeit, Latenz und Datenschutz im ersten Schritt eher verschlechtert als verbessert.
 
+Beobachtungen zu Datenqualität und Performance: [data-quality.md](../data-quality.md).
+
 ## Konsequenzen
 
 ### Vorteile

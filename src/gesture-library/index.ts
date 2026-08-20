@@ -1,4 +1,10 @@
-export { GestureRecognizer, DEFAULT_COOLDOWN_MS, DEFAULT_HOLD_TIME_MS } from './engine'
+export {
+  GestureRecognizer,
+  DEFAULT_COOLDOWN_MS,
+  DEFAULT_HOLD_TIME_MS,
+  DEFAULT_POSE_LOSS_GRACE_MS,
+  DEFAULT_SMOOTHING_ALPHA,
+} from './engine'
 export { createDefaultGestureRecognizer } from './defaults'
 export { GEHE_VOR } from './gestures/gehe-vor'
 export { GEHE_ZURUECK } from './gestures/gehe-zurueck'

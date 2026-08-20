@@ -4,39 +4,17 @@ Dieses Dokument definiert die reproduzierbaren Kennzahlen für Weg B (Robustheit
 
 ## Setup
 
-### Test-Framework
-
-```bash
-npm install -D vitest
-```
-
-Neues Script in `package.json`:
-
-```json
-"test": "vitest run",
-"test:watch": "vitest"
-```
-
-Tests liegen unter `src/gesture-library/__tests__/`. Synthetische Poses kommen aus `test-helpers.ts`.
+Vitest ist bereits eingerichtet (`npm test` / `npm run test:watch`). Tests liegen unter `src/gesture-library/__tests__/`. Synthetische Poses kommen aus `test-helpers.ts`.
 
 ### Simulations-Hilfsfunktion
 
-Jeder Test durchläuft Frames mit festem `timestamp`-Inkrement (16 ms ≈ 60 fps):
+Jeder Test durchläuft Frames mit festem `timestamp`-Inkrement (16 ms ≈ 60 fps) über `runSequence` in `__tests__/test-utils.ts`.
 
-```typescript
-function runSequence(
-  recognizer: GestureRecognizer,
-  frames: Array<{ landmarks: NormalizedLandmark[] | undefined; t: number }>
-): GestureResult[] {
-  return frames.map(({ landmarks, t }) => recognizer.process(landmarks, t))
-}
-```
-
-Gesten gelten als **getriggert**, wenn `activeGesture !== 'NONE'` in einem Frame oder ein `gesture`-Event gefeuert wird.
+Gesten gelten als **getriggert**, wenn ein `gesture`-Event gefeuert wird.
 
 ### Arming-Vorlauf
 
-Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames à 16 ms), damit `armed === true` ist, bevor die Test-Geste startet. Das entspricht dem realen Nutzerfluss („kurz neutral halten").
+Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms, damit `armed === true` ist, bevor die Test-Geste startet.
 
 ---
 
@@ -210,8 +188,8 @@ Das ist **kein Ersatz** für K1–K7, aber gutes Material fürs Video.
 
 ## Implementierungs-Reihenfolge
 
-1. Vitest + `runSequence`-Helper anlegen
-2. S1 (Idle) und S2 (Latency) laufen lassen → Baseline-Tabelle Spalte „Vorher"
-3. Library-Änderungen (ADR 006/007)
-4. Alle Tests erneut → Spalte „Nachher"
-5. Tabelle in README oder Issue-Kommentar veröffentlichen
+1. Vitest + `runSequence`-Helper — erledigt
+2. S1–S5 Baseline messen → Spalte „Vorher" — erledigt
+3. Library-Änderungen (ADR 006/007) — erledigt
+4. Nachher-Messung — erledigt (Tabelle oben)
+5. Kennzahlen in Issue-Kommentar / Video zeigen — noch offen für Abgabe

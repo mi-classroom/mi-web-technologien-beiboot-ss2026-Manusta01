@@ -103,4 +103,4 @@ Keine geplant. `process()`, `on('gesture')` und bestehende Gesture-Plugins bleib
 - [Gestenvokabular und Grenzen](../gestures.md)
 - [Gesture Library API](../gesture-library-api.md)
 - [ADR 002: Gesture Library Architektur](002-gesture-library-architecture.md)
-- [ADR 004: API zum Auflisten registrierer Gesten](004-gesture-enumeration-api.md)
+- [API zum Auflisten registrierter Gesten](004-gesture-enumeration-api.md)
