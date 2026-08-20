@@ -6,7 +6,8 @@ export const PAUSE_STOP: GestureDefinition = {
   priority: 10,
   evaluate(ctx) {
     if (!ctx.canDetect || !ctx.armed) return null
-    const { rightWristAboveShoulder, leftWristAboveShoulder } = ctx.features
+    const { rightWristAboveShoulder, leftWristAboveShoulder, rightArm, leftArm } = ctx.features
+    if (!rightArm?.visible || !leftArm?.visible) return null
     if (rightWristAboveShoulder && leftWristAboveShoulder) {
       return { confidence: 1 }
     }

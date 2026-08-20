@@ -53,6 +53,7 @@ export type GestureDebug = {
   dynamicDxThreshold: number
   rightArm: ArmFeatures | null
   leftArm: ArmFeatures | null
+  poseLostMs: number
 }
 
 export type GestureResult = {
@@ -82,6 +83,8 @@ export type RecognizerConfig = {
   visibilityMin?: number
   neutralDxFactor?: number
   neutralHoldMs?: number
+  poseLossGraceMs?: number
+  smoothingAlpha?: number
 }
 
 export type PoseLandmarks = NormalizedLandmark[][]

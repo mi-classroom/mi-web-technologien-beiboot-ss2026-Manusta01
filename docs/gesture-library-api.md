@@ -39,6 +39,8 @@ const recognizer = new GestureRecognizer({
   horizontalDxMin: 0.03,
   shoulderSpanFactor: 0.2,
   neutralHoldMs: 220, // Dauer in neutraler Pose vor Arming
+  poseLossGraceMs: 200, // Tracking-Lücke tolerieren, Kandidat/Arming erhalten
+  smoothingAlpha: 0.45, // EMA-Glättung für Arm-dx/dy (0 = de facto aus)
 })
 ```
 

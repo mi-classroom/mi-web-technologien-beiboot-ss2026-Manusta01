@@ -20,6 +20,8 @@ Dieses Repository enthält ein kleines Frontend-Demoprojekt zur Pose-/Landmark-E
 - [ADR: Auswahl weiterer Gesten](docs/adr/003-gesture-selection.md)
 - [ADR: API zum Auflisten registrierter Gesten](docs/adr/004-gesture-enumeration-api.md)
 - [ADR: Issue #5 — Weg B Robustheit](docs/adr/005-issue5-path-b-robustness.md)
+- [ADR: Pose-Verlust-Grace](docs/adr/006-pose-loss-grace.md)
+- [ADR: Glättung und Disambiguierung](docs/adr/007-smoothing-and-disambiguation.md)
 - [Baseline-Messung Vorher/Nachher (Issue #5)](docs/baseline-measurement.md)
 - [Gesten-Präsentation (Issue #4)](apps/presentation-demo/README.md)
 

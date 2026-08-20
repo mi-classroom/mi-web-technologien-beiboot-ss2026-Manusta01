@@ -42,15 +42,15 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 ## Kennzahlen
 
-| ID  | Kennzahl                                   | Einheit             | Ziel (Nachher) |
-| --- | ------------------------------------------ | ------------------- | -------------- |
-| K1  | False-Positive-Rate im Idle                | Trigger / 30 s      | ≤ 1            |
-| K2  | Time-to-trigger (GEHE_VOR)                 | ms                  | ≤ 700          |
-| K3  | Time-to-trigger (PAUSE_STOP)               | ms                  | ≤ 700          |
-| K4  | Time-to-trigger (NAECHSTER_EINTRAG)        | ms                  | ≤ 700          |
-| K5  | Verwechslungsrate Pause ↔ Nächster Eintrag | %                   | 0 %            |
-| K6  | Überlebensrate bei Pose-Verlust            | % Kandidat erhalten | ≥ 80 %         |
-| K7  | Re-Arming nach Pose-Verlust                | ms                  | ≤ 500          |
+| ID | Kennzahl | Einheit | Ziel (Nachher) |
+| --- | --- | --- | --- |
+| K1 | False-Positive-Rate im Idle | Trigger / 30 s | ≤ 1 |
+| K2 | Time-to-trigger (GEHE_VOR) | ms | ≤ 700 |
+| K3 | Time-to-trigger (PAUSE_STOP) | ms | ≤ 700 |
+| K4 | Time-to-trigger (NAECHSTER_EINTRAG) | ms | ≤ 700 |
+| K5 | Verwechslungsrate Pause ↔ Nächster Eintrag | % | 0 % |
+| K6 | Überlebensrate bei Pose-Verlust | % Kandidat erhalten | ≥ 80 % |
+| K7 | Re-Arming nach Pose-Verlust | ms | ≤ 500 |
 
 ---
 
@@ -60,8 +60,8 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 **Zweck:** Misst Fehltrigger bei stabiler Neutralpose.
 
-| Phase   | Dauer              | Pose            |
-| ------- | ------------------ | --------------- |
+| Phase | Dauer | Pose |
+| --- | --- | --- |
 | Neutral | 30 s (1875 Frames) | `neutralPose()` |
 
 **Messung:** Anzahl `gesture`-Events oder Frames mit `activeGesture !== 'NONE'`.
@@ -76,10 +76,10 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 **Zweck:** Misst Latenz von Geste-start bis erstem Trigger.
 
-| Phase        | Dauer   | Pose            |
-| ------------ | ------- | --------------- |
-| Neutral      | 300 ms  | `neutralPose()` |
-| Geste halten | 2000 ms | jeweilige Pose  |
+| Phase | Dauer | Pose |
+| --- | --- | --- |
+| Neutral | 300 ms | `neutralPose()` |
+| Geste halten | 2000 ms | jeweilige Pose |
 
 **Poses:**
 
@@ -97,11 +97,11 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 **Zweck:** Prüft, ob eine Geste fälschlich eine andere auslöst.
 
-| Testfall | Pose                     | Erwarteter Trigger | Unerwünschter Trigger         |
-| -------- | ------------------------ | ------------------ | ----------------------------- |
-| S3a      | `pauseStopPose()`        | PAUSE_STOP         | NAECHSTER_EINTRAG             |
-| S3b      | `naechsterEintragPose()` | NAECHSTER_EINTRAG  | PAUSE_STOP                    |
-| S3c      | `geheVorPose()`          | GEHE_VOR           | PAUSE_STOP, NAECHSTER_EINTRAG |
+| Testfall | Pose | Erwarteter Trigger | Unerwünschter Trigger |
+| --- | --- | --- | --- |
+| S3a | `pauseStopPose()` | PAUSE_STOP | NAECHSTER_EINTRAG |
+| S3b | `naechsterEintragPose()` | NAECHSTER_EINTRAG | PAUSE_STOP |
+| S3c | `geheVorPose()` | GEHE_VOR | PAUSE_STOP, NAECHSTER_EINTRAG |
 
 **Messung:** Boolean — wurde ein unerwünschter Trigger ausgelöst?
 
@@ -115,12 +115,12 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 **Zweck:** Misst, ob ein kurzes Tracking-Loch den Kandidaten zerstört.
 
-| Phase            | Dauer      | Landmarks       |
-| ---------------- | ---------- | --------------- |
-| Neutral          | 300 ms     | `neutralPose()` |
-| Geste            | 200 ms     | `geheVorPose()` |
-| **Verlust**      | **150 ms** | `undefined`     |
-| Geste fortsetzen | 800 ms     | `geheVorPose()` |
+| Phase | Dauer | Landmarks |
+| --- | --- | --- |
+| Neutral | 300 ms | `neutralPose()` |
+| Geste | 200 ms | `geheVorPose()` |
+| **Verlust** | **150 ms** | `undefined` |
+| Geste fortsetzen | 800 ms | `geheVorPose()` |
 
 **Messung:** Wird GEHE_VOR innerhalb der Gesamtsequenz getriggert? Wie viele ms Kandidat-Haltung (`candidateHoldMs`) gehen verloren?
 
@@ -134,12 +134,12 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms (19 Frames �
 
 **Zweck:** Misst, wie schnell der Recognizer nach totalem Tracking-Verlust wieder einsatzbereit ist.
 
-| Phase           | Dauer   | Landmarks       |
-| --------------- | ------- | --------------- |
-| Neutral + armed | 300 ms  | `neutralPose()` |
-| Verlust         | 500 ms  | `undefined`     |
-| Neutral         | 300 ms  | `neutralPose()` |
-| Geste           | 2000 ms | `geheVorPose()` |
+| Phase | Dauer | Landmarks |
+| --- | --- | --- |
+| Neutral + armed | 300 ms | `neutralPose()` |
+| Verlust | 500 ms | `undefined` |
+| Neutral | 300 ms | `neutralPose()` |
+| Geste | 2000 ms | `geheVorPose()` |
 
 **Messung:** Time-to-trigger ab Geste-start nach Recovery.
 
@@ -168,24 +168,25 @@ function jitteredPose(base: NormalizedLandmark[], noiseY = 0.008): NormalizedLan
 
 ## Ergebnis-Tabelle (ausfüllen)
 
-| Kennzahl                              | Vorher     | Nachher | Δ   |
-| ------------------------------------- | ---------- | ------- | --- |
-| K1 — False Positives / 30 s           | 0          |         |     |
-| K2 — TTG GEHE_VOR (ms)                | 464        |         |     |
-| K3 — TTG PAUSE_STOP (ms)              | 464        |         |     |
-| K4 — TTG NAECHSTER_EINTRAG (ms)       | 464        |         |     |
-| K5 — Verwechslungsrate                | 0 % (0/3)  |         |     |
-| K6 — Trigger nach 150 ms Pose-Verlust | nein (0 %) |         |     |
-| K7 — Re-Arming nach Verlust (ms)      | 464        |         |     |
+| Kennzahl | Vorher | Nachher | Δ |
+| --- | --- | --- | --- |
+| K1 — False Positives / 30 s | 0 | 0 | — |
+| K2 — TTG GEHE_VOR (ms) | 464 | 464 | — |
+| K3 — TTG PAUSE_STOP (ms) | 464 | 480 | +16 |
+| K4 — TTG NAECHSTER_EINTRAG (ms) | 464 | 480 | +16 |
+| K5 — Verwechslungsrate | 0 % (0/3) | 0 % (0/3) | — |
+| K6 — Trigger nach 150 ms Pose-Verlust | nein (0 %) | **ja (100 %)** | **+100 %** |
+| K7 — Re-Arming nach Verlust (ms) | 464 | 464 | — |
+| S6 — Jitter-Trigger-Rate NAECHSTER_EINTRAG | — | 100 % (10/10) | neu |
 
-Gemessen am 19.08.2026 mit `npm test` (Vitest, synthetische Poses). Ausführung: `npm test -- --reporter=verbose` zeigt die Kennzahlen in stdout.
+Gemessen am 19.08.2026 mit `npm test -- --reporter=verbose`. Nachher-Werte nach ADR 006 (Pose-Verlust-Grace) und ADR 007 (Glättung, Disambiguierung).
 
-**Interpretation Vorher:**
+**Interpretation Nachher:**
 
-- K1–K5 sind mit idealisierten Poses stabil — das bestätigt die Heuristik unter Laborbedingungen.
-- **K6 ist die Haupthschwäche:** 150 ms Tracking-Lücke zerstört Kandidat und Arming; die Geste triggert danach nicht mehr.
-- K7 zeigt, dass Re-Arming nach längerem Verlust grundsätzlich funktioniert (464 ms ≈ Hold 450 ms + 1 Frame).
-- K5 kann in der Live-Demo trotzdem scheitern (Jitter, Teilverdeckung) — dafür ist S6 (Jitter) vorgesehen.
+- **K6 ist gelöst** — 150 ms Tracking-Lücke bricht Gesten nicht mehr ab (ADR 006).
+- K3/K4 +16 ms Latenz durch EMA-Aufwärmen — akzeptabler Trade-off, weiterhin ≤ 700 ms.
+- S6 bestätigt Jitter-Robustheit für vertikale Gesten.
+- K1, K5, K7 unverändert stabil.
 
 ---
 
