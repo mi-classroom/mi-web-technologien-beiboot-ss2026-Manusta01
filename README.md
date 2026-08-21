@@ -1,73 +1,102 @@
-# Beiboot — Web-Technologien (Demoprojekt)
+# Beiboot — Pose-Gesten im Browser
 
-## Kurzbeschreibung
+Studienprojekt (Master) zur browserbasierten Pose- und Gestenerkennung mit MediaPipe und einer eigenen Gesture Library.
 
-Browser-Demo zur Pose-/Landmark-Erkennung (TypeScript, Vite, MediaPipe) mit erweiterbarer Gesture Library. Zwei Anwendungen nutzen dieselbe Library und eine gemeinsame Kamera-/Pose-Infrastruktur.
+## Hochschulkontext
+
+|                 |                                                     |
+| --------------- | --------------------------------------------------- |
+| **Hochschule**  | TH Köln, Campus Gummersbach                         |
+| **Studiengang** | Digital Sciences (Master)                           |
+| **Modul**       | Web-Technologien                                    |
+| **Semester**    | Sommersemester 2026                                 |
+| **Betreuung**   | Prof. Christian Noss                                |
+| **Art**         | Studienleistung / Praxisprojekt (Issue-Serie #1–#5) |
+| **Autor**       | [Manuel Stamm](https://github.com/Manusta01)        |
+
+## Zielsetzung
+
+**Forschungs- bzw. Entwicklungsfrage:** Wie lässt sich eine erweiterbare, testbare Gesture Library auf Pose-Landmarks so bauen, dass sie über eine klare öffentliche API nutzbar ist und wo stößt frame-basierte Heuristik an Grenzen der Robustheit?
+
+Das Repository beantwortet das schrittweise:
+
+1. Rohdaten sichtbar machen (Issue #1)
+2. Gestenvokabular und Prototyp (Issue #2)
+3. Library-Struktur und API (Issue #3)
+4. Fremde Consumer-App nur über die öffentliche API (Issue #4)
+5. Vertiefung Robustheit mit Vorher/Nachher-Messung (Issue #5, **Weg B**)
+
+## Abbildung Repo ↔ Ausarbeitung / Issues
+
+| Thema                  | Dokumentation                                                                                    | Code                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------- |
+| ML-Wahl, Datenqualität | [ADR 001](docs/adr/001-mediapipe-pose-landmarker.md), [data-quality.md](docs/data-quality.md)    | `src/pose-camera/`               |
+| Gestenmapping          | [gestures.md](docs/gestures.md), [ADR 003](docs/adr/003-gesture-selection.md)                    | `src/gesture-library/gestures/`  |
+| Library-Architektur    | [ADR 002](docs/adr/002-gesture-library-architecture.md), [architecture.md](docs/architecture.md) | `src/gesture-library/`           |
+| API-Lücke Enumeration  | [ADR 004](docs/adr/004-gesture-enumeration-api.md)                                               | `getRegisteredGestures()`        |
+| Consumer-Demo          | [presentation-demo README](apps/presentation-demo/README.md)                                     | `apps/presentation-demo/`        |
+| Robustheit / Messung   | [ADR 005–007](docs/adr/), [baseline-measurement.md](docs/baseline-measurement.md)                | Stabilisierung, Smoothing, Tests |
 
 ## Anwendungen
 
-| App | Befehl | Zweck |
-| --- | --- | --- |
-| **Pose-Demo** (Root) | `npm run dev` | Rohdaten, Landmarks, Debug-Metriken (Issue #1–#3) |
-| **Gesten-Präsentation** | `npm run dev:presentation` | Folien steuern per Geste — Consumer der öffentlichen API (Issue #4); **empfohlene Demo für Issue #5** |
+| App                     | Befehl                     | Zweck                                                                           |
+| ----------------------- | -------------------------- | ------------------------------------------------------------------------------- |
+| **Pose-Demo** (Root)    | `npm run dev`              | Rohdaten, Landmarks, Debug-Metriken (Issue #1–#3)                               |
+| **Gesten-Präsentation** | `npm run dev:presentation` | Folien per Geste — öffentliche API (Issue #4); **empfohlene Demo für Issue #5** |
 
 ## Architektur
 
-- `@beiboot/gesture-library` (`src/gesture-library/`) — Gestenerkennung, öffentliche API
-- `@beiboot/pose-camera` (`src/pose-camera/`) — Kamera, MediaPipe-Inferenz, Landmark-Rendering (geteilt von beiden Apps)
-- `apps/presentation-demo/` — eigenständige App, importiert nur die öffentlichen Pakete
+Siehe [docs/architecture.md](docs/architecture.md).
 
-## Wichtigste Merkmale
-
-- Live-Webcam mit Pose/Landmark-Visualisierung
-- Plugin-basierte Gestenerkennung (Hold, Cooldown, Arming, Pose-Loss-Grace, EMA-Glättung)
-- Vitest-Baseline mit Vorher/Nachher-Kennzahlen (Issue #5, Weg B)
-
-## Dokumentation
-
-- [Gestenvokabular und Bewertung](docs/gestures.md)
-- [Datenqualität der Pose-Landmarks (Issue #1)](docs/data-quality.md)
-- [Gesture Library API](docs/gesture-library-api.md)
-- [ADR: MediaPipe Pose Landmarker](docs/adr/001-mediapipe-pose-landmarker.md)
-- [ADR: Gesture Library Architektur](docs/adr/002-gesture-library-architecture.md)
-- [ADR: Auswahl weiterer Gesten](docs/adr/003-gesture-selection.md)
-- [ADR: API zum Auflisten registrierter Gesten](docs/adr/004-gesture-enumeration-api.md)
-- [ADR: Issue #5 — Weg B Robustheit](docs/adr/005-issue5-path-b-robustness.md)
-- [ADR: Pose-Verlust-Grace](docs/adr/006-pose-loss-grace.md)
-- [ADR: Glättung und Disambiguierung](docs/adr/007-smoothing-and-disambiguation.md)
-- [Baseline-Messung Vorher/Nachher (Issue #5)](docs/baseline-measurement.md)
-- [Gesten-Präsentation (Issue #4)](apps/presentation-demo/README.md)
+- `@beiboot/gesture-library` — Gestenerkennung, öffentliche API
+- `@beiboot/pose-camera` — Kamera, MediaPipe-Inferenz, Landmark-Rendering
+- `apps/presentation-demo/` — eigenständige App über die öffentlichen Pakete
 
 ## Voraussetzungen
 
-- Node.js >= 23 (siehe auch `engines` in `package.json`)
-- npm
-- Webcam und HTTPS bzw. `localhost` für Kamerazugriff
+- Node.js >= 23 (`engines` in `package.json`)
+- npm (Installationen über **`package-lock.json`** / `npm ci`)
+- Webcam; Kamerazugriff nur unter HTTPS oder `localhost`
+- **Keine Umgebungsvariablen** erforderlich
 
-## Schnellstart (Entwicklung)
+## Schnellstart
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Gesten-Präsentation:
+Präsentation:
 
 ```bash
 npm run dev:presentation
 ```
 
-Tests:
+Tests, Lint, Builds:
 
 ```bash
 npm test
+npm run lint
+npm run build
+npm run build:presentation
 ```
 
 Öffne `http://localhost:5173` (Pose-Demo) bzw. `http://localhost:5174` (Präsentation).
 
-## Build für Produktion
+## Dokumentation
 
-Pose-Demo:
+- [Architektur](docs/architecture.md)
+- [Gestenvokabular](docs/gestures.md)
+- [Datenqualität](docs/data-quality.md)
+- [Gesture Library API](docs/gesture-library-api.md)
+- [Baseline Vorher/Nachher](docs/baseline-measurement.md)
+- [Datenschutz / Kamera](docs/privacy.md)
+- [Qualität: a11y, Performance, Security](docs/quality-attributes.md)
+- [KI-Einsatz](docs/ai-usage.md)
+- [Drittanbieter-Lizenzen](THIRD_PARTY_LICENSES.md)
+- ADRs: [001](docs/adr/001-mediapipe-pose-landmarker.md) … [007](docs/adr/007-smoothing-and-disambiguation.md)
+
+## Build
 
 ```bash
 npm run build
@@ -81,15 +110,30 @@ npm run build:presentation
 npm run preview --workspace=@beiboot/presentation-demo
 ```
 
-Die Build-Ausgabe liegt unter `dist/` bzw. `apps/presentation-demo/dist/`.
+Ausgabe: `dist/` bzw. `apps/presentation-demo/dist/`.
 
-## Deploy (selbst)
+## Deploy
 
 Statisches Hosting mit **HTTPS** (Kamera-API). Beispiel GitHub Pages:
 
-1. Präsentation bauen: `npm run build:presentation`
-2. Inhalt von `apps/presentation-demo/dist/` als Pages-Artefakt veröffentlichen
-3. Bei Projekt-Seiten unter `/<repo>/` in `apps/presentation-demo/vite.config.ts` `base: '/<repo>/'` setzen und neu bauen
-4. Öffentliche URL in der README oder im Issue hinterlegen
+1. `npm run build:presentation`
+2. `apps/presentation-demo/dist/` veröffentlichen
+3. Bei Projekt-Seiten unter `/<repo>/`: in `apps/presentation-demo/vite.config.ts` `base: '/<repo>/'` setzen und neu bauen
+4. Öffentliche URL hier eintragen: _TODO nach Deploy_
 
-Alternativen: Cloudflare Pages, Netlify, Vercel — jeweils Build-Befehl `npm run build:presentation` und Publish-Directory `apps/presentation-demo/dist`.
+Alternativen: Cloudflare Pages, Netlify, Vercel — Build `npm run build:presentation`, Publish-Directory `apps/presentation-demo/dist`.
+
+## Abgabestand
+
+Nach finalem Stand auf `main`:
+
+```bash
+git tag -a v1.0.0-issue5 -m "Abgabe Issue #5 Weg B"
+git push origin v1.0.0-issue5
+```
+
+Optional GitHub Release mit derselben Tag-Version.
+
+## Lizenz
+
+MIT — siehe [LICENSE](LICENSE). Drittkomponenten: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).

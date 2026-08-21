@@ -11,7 +11,7 @@
   "dependencies": {
     "@beiboot/gesture-library": "file:../../src/gesture-library",
     "@beiboot/pose-camera": "file:../../src/pose-camera",
-    "@mediapipe/tasks-vision": "^0.10.22"
+    "@mediapipe/tasks-vision": "0.10.35"
   },
   "devDependencies": {
     "typescript": "^6.0.3",
