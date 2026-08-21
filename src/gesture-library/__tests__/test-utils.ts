@@ -1,7 +1,7 @@
 import { NormalizedLandmark } from '@mediapipe/tasks-vision'
 import { createDefaultGestureRecognizer } from '../defaults'
 import { GestureRecognizer } from '../engine'
-import { GestureResult, NONE_GESTURE, PoseLandmarks } from '../types'
+import { GestureResult, PoseLandmarks } from '../types'
 
 export const FRAME_MS = 16
 
