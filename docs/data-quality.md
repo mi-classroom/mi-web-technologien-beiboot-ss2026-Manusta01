@@ -14,7 +14,7 @@ Kurze Beobachtungen zur MediaPipe Pose Landmarker Demo im Browser. Grundlage: Li
 - **Visibility-Scores** schwanken stark bei Teilverdeckung, seitlichem Blick oder schlechtem Licht — Werte können kurz unter sinnvolle Schwellen fallen, obwohl der Arm noch sichtbar ist.
 - **Y-Koordinaten der Handgelenke** zittern stärker als X; vertikale Gesten (z. B. Arm nach oben) sind anfälliger für False Negatives.
 - **Ellbogen** verschwinden oft zuerst aus dem Tracking; ohne Ellbogen bricht eine Arm-Heuristik, die Sichtbarkeit verlangt, ab.
-- **Spiegelung / Kamera-Facing**: Nutzer erwarten oft gespiegeltes Video; Koordinaten bleiben im MediaPipe-Raum ungespiegelt — UI und Heuristik müssen das konsistent halten.
+- **Spiegelung / Kamera-Facing:** Die Landmark-Erkennung und Gesture Library arbeiten auf dem **ungespiegelten** Videobild (MediaPipe-Bildkoordinaten: `x` wächst nach rechts im Frame). Die Canvas-Vorschau in `@beiboot/pose-camera` spiegelt standardmäßig (`mirror: true`), damit die Ansicht wie ein Spiegel wirkt. How-tos müssen das trennen: Erkennung = Bildraum; Vorschau = gespiegelt. Navigation nutzt `dominantDx` (stärkerer sichtbarer Arm), nicht zwingend „nur rechter“ bzw. „nur linker“ Arm.
 
 ## Performance (Beobachtung)
 

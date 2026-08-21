@@ -6,7 +6,7 @@
 
 ## Kontext
 
-In Issue #2 wurden zwei Gesten prototypisch in `src/gestures/gestures.ts` implementiert. Die Logik war mit DOM-Zugriff, globalem Zustand und Rendering vermischt. Für Issue 3 soll daraus eine erweiterbare, testbare und dokumentierte Gesture Library entstehen.
+In Issue #2 wurden zwei Gesten prototypisch implementiert (historischer Pfad: damals unter `src/gestures/`; die Logik liegt heute in `src/gesture-library/gestures/`). Die frühe Variante war mit DOM-Zugriff, globalem Zustand und Rendering vermischt. Für Issue 3 soll daraus eine erweiterbare, testbare und dokumentierte Gesture Library entstehen.
 
 ## Entscheidung
 

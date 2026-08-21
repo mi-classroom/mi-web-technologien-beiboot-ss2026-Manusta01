@@ -33,7 +33,7 @@ Priorität (`PAUSE_STOP: 10`) bleibt als Fallback bei echtem Zwei-Arm-Raise.
 
 ## Begründung
 
-- S6 Jitter-Test: 100 % Trigger-Rate (10/10) mit Y-Rauschen ±0.004.
+- S6 Jitter-Test: 100 % Trigger-Rate (10/10) mit `noiseY = 0.008` (Zufallsanteil ±0.004 auf `y`).
 - S3 Disambiguierung: 0 % Fehltrigger bei idealisierten Poses; linke Arm-Anforderung verhindert Pause-Fehler bei Einzelarm-Geste.
 - Glättung ist interpretierbar und debugbar (geglättete Werte in Arm-Features sichtbar).
 

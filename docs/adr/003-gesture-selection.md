@@ -13,7 +13,7 @@ Die Gesture Library soll mindestens vier Gesten umfassen: die zwei bestehenden a
 Zusätzlich zu **Gehe vor** und **Gehe zurück** werden implementiert:
 
 1. **PAUSE_STOP** — beide Handgelenke oberhalb der Schultern
-2. **NAECHSTER_EINTRAG** — rechtes Handgelenk deutlich über rechter Schulter (Y-Achse)
+2. **NAECHSTER_EINTRAG** — rechtes Handgelenk deutlich über rechter Schulter (Y-Achse); gehaltene Pose, kein Swipe
 
 ## Begründung
 
@@ -31,3 +31,7 @@ Zusätzlich zu **Gehe vor** und **Gehe zurück** werden implementiert:
 
 - Die Neutral-Erkennung berücksichtigt erhobene Arme (`armsRaised`), damit Pause nicht fälschlich als „neutral" gilt.
 - Weitere Gesten können nach demselben Plugin-Muster ergänzt werden.
+
+## Nachtrag (Issue #5 / ADR 007)
+
+`NAECHSTER_EINTRAG` verlangt zusätzlich, dass der **linke** Arm nicht oben ist (`!leftWristAboveShoulder`), damit Pause und Nächster Eintrag nicht verwechselt werden. Details: [007-smoothing-and-disambiguation.md](007-smoothing-and-disambiguation.md).

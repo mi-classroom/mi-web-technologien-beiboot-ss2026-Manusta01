@@ -1,6 +1,6 @@
 # Drittanbieter-Lizenzen
 
-Dieses Projekt nutzt folgende relevante Drittkomponenten. Die genauen Versionen stehen in `package-lock.json`.
+Dieses Projekt nutzt folgende **wesentliche** Drittkomponenten (Auswahl). Weitere Dev-Dependencies (z. B. husky, lint-staged) stehen in `package-lock.json`.
 
 | Paket | Verwendung | Lizenz (laut Upstream) | Quelle |
 | --- | --- | --- | --- |

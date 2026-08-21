@@ -48,9 +48,12 @@ Das Repository beantwortet das schrittweise:
 
 Siehe [docs/architecture.md](docs/architecture.md).
 
+- Root-npm-Paket heißt `pose-demo` (Vite-App); Workspace-Pakete nutzen den Scope `@beiboot/*`
 - `@beiboot/gesture-library` — Gestenerkennung, öffentliche API
 - `@beiboot/pose-camera` — Kamera, MediaPipe-Inferenz, Landmark-Rendering
 - `apps/presentation-demo/` — eigenständige App über die öffentlichen Pakete
+
+Pose-Demo-Port: Vite-Default **5173** (kein Root-`vite.config`). Präsentation: **5174**.
 
 ## Voraussetzungen
 

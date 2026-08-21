@@ -81,7 +81,7 @@ Trainierbar und skalierbar, aber Overkill für vier Gesten in 20–24 h. Verworf
 
 - Hold-/Cooldown-Defaults können sich ändern → Latenz vs. Fehltrigger (bewusst dokumentiert).
 - Optional neue Config-Felder (`smoothingAlpha`, `poseLossGraceMs`, …) — kein Breaking Change, aber mehr API-Oberfläche.
-- Kalibrierung der Neutralpose ist für den Prototyp optional; vollständige Nutzer-Kalibrierung kann in Scope-Creep kippen.
+- **Nutzer-Kalibrierung der Neutralpose wurde nicht umgesetzt** (bewusst deferred, Scope); Arming bleibt über feste Neutral-Schwellen.
 
 ### Breaking Changes
 

@@ -4,11 +4,19 @@ Die Gesture Library kapselt Pose-basierte Gestenerkennung unabhängig von der De
 
 ## Installation und Import
 
-Die Library liegt im Projekt unter `src/gesture-library/` und wird direkt importiert:
+Workspace-Paket `@beiboot/gesture-library` (Quellcode unter `src/gesture-library/`):
 
 ```typescript
-import { GestureRecognizer, createDefaultGestureRecognizer, GEHE_VOR, PAUSE_STOP } from './gesture-library'
+import {
+  GestureRecognizer,
+  createDefaultGestureRecognizer,
+  GEHE_VOR,
+  PAUSE_STOP,
+  NONE_GESTURE,
+} from '@beiboot/gesture-library'
 ```
+
+In der Root-Pose-Demo ist auch ein relativer Import möglich (`./gesture-library`). Consumer-Apps sollen das Paket nutzen.
 
 ## Schnellstart
 
@@ -25,26 +33,31 @@ console.log(result.debug) // Debug-Metriken für UI/Logging
 
 `createDefaultGestureRecognizer()` registriert alle vier Standard-Gesten:
 
-- `GEHE_VOR` — Gehe vor
-- `GEHE_ZURUECK` — Gehe zurück
-- `PAUSE_STOP` — Pause / Stop
-- `NAECHSTER_EINTRAG` — Nächster Eintrag
+| Name | Label | Default-`priority` |
+| --- | --- | --- |
+| `GEHE_VOR` | Gehe vor | 0 |
+| `GEHE_ZURUECK` | Gehe zurück | 0 |
+| `PAUSE_STOP` | Pause / Stop | 10 |
+| `NAECHSTER_EINTRAG` | Nächster Eintrag | 5 |
+
+Bei Konflikten gewinnt die höhere Priorität.
 
 ## GestureRecognizer instanziieren
 
 ```typescript
 const recognizer = new GestureRecognizer({
-  holdTimeMs: 450, // Kandidat muss so lange stabil sein
-  cooldownMs: 900, // Sperrzeit nach erkanntem Trigger
+  holdTimeMs: 450,
+  cooldownMs: 900,
   horizontalDxMin: 0.03,
   shoulderSpanFactor: 0.2,
-  neutralHoldMs: 220, // Dauer in neutraler Pose vor Arming
-  poseLossGraceMs: 200, // Tracking-Lücke tolerieren, Kandidat/Arming erhalten
-  smoothingAlpha: 0.45, // EMA-Glättung für Arm-dx/dy (0 = de facto aus)
+  neutralHoldMs: 220,
+  neutralDxFactor: 0.55,
+  poseLossGraceMs: 200,
+  smoothingAlpha: 0.45,
 })
 ```
 
-Alle Optionen sind optional. Fehlende Werte nutzen die Defaults aus `engine.ts` (exportiert u. a. als `DEFAULT_HOLD_TIME_MS`, `DEFAULT_COOLDOWN_MS`, `DEFAULT_POSE_LOSS_GRACE_MS`, `DEFAULT_SMOOTHING_ALPHA`).
+Alle Optionen sind optional. Defaults aus `engine.ts` (exportiert als `DEFAULT_HOLD_TIME_MS`, `DEFAULT_COOLDOWN_MS`, `DEFAULT_POSE_LOSS_GRACE_MS`, `DEFAULT_SMOOTHING_ALPHA`).
 
 | Option | Default | Bedeutung |
 | --- | --- | --- |
@@ -54,20 +67,19 @@ Alle Optionen sind optional. Fehlende Werte nutzen die Defaults aus `engine.ts` 
 | `poseLossGraceMs` | 200 | Tracking-Lücke, in der Kandidat/Arming erhalten bleiben |
 | `smoothingAlpha` | 0.45 | EMA-Glättung für Arm-`dx`/`dy` (`0` ≈ aus) |
 | `neutralHoldMs` | 220 | Neutrale Pose vor Arming |
+| `neutralDxFactor` | 0.55 | Faktor für Neutral-Schwelle relativ zu `dynamicDxThreshold` |
 | `horizontalDxMin` / `shoulderSpanFactor` | 0.03 / 0.2 | Dynamische X-Schwelle |
 | `visibilityMin` / `elbowVisibilityMin` | 0.45 | Sichtbarkeitsgrenzen |
 
 ## Gesten registrieren
 
-Neue Gesten werden als Plugins registriert, ohne bestehenden Code zu ändern:
-
 ```typescript
-import { GestureDefinition } from './gesture-library'
+import { GestureDefinition } from '@beiboot/gesture-library'
 
 const meineGeste: GestureDefinition = {
   name: 'MEINE_GESTE',
   label: 'Meine Geste',
-  priority: 5, // optional, höhere Priorität gewinnt bei Konflikten
+  priority: 5,
   evaluate(ctx) {
     if (!ctx.canDetect || !ctx.armed) return null
 
@@ -84,26 +96,23 @@ recognizer.register(meineGeste)
 
 ### GestureContext
 
-Jede `evaluate()`-Funktion erhält einen Kontext:
+| Feld | Bedeutung |
+| --- | --- |
+| `armed` | Nutzer hat neutral gehalten, Trigger ist erlaubt |
+| `canDetect` | Cooldown ist abgelaufen |
+| `features` | Extrahierte Pose-Merkmale (Arme, Schwellen, Richtungen) |
+| `timestamp` | Aktueller Zeitstempel in ms |
 
-| Feld        | Bedeutung                                               |
-| ----------- | ------------------------------------------------------- |
-| `armed`     | Nutzer hat neutral gehalten, Trigger ist erlaubt        |
-| `canDetect` | Cooldown ist abgelaufen                                 |
-| `features`  | Extrahierte Pose-Merkmale (Arme, Schwellen, Richtungen) |
-| `timestamp` | Aktueller Zeitstempel in ms                             |
-
-Rückgabe `null` bedeutet: Geste trifft in diesem Frame nicht zu. Ein `GestureMatch`-Objekt markiert einen Treffer.
+Rückgabe `null` = kein Treffer. `GestureMatch` = Treffer.
 
 ## Erkannte Gesten abfragen
 
 ```typescript
 const { activeGesture, candidateGesture, debug } = recognizer.process(landmarks, timestamp)
 
-// Labels für die UI
-recognizer.labelFor(activeGesture) // z. B. 'Gehe vor'
-recognizer.getHoldTimeMs() // konfigurierte Haltezeit
-recognizer.getRegisteredGestures() // [{ name: 'GEHE_VOR', label: 'Gehe vor' }, …]
+recognizer.labelFor(activeGesture)
+recognizer.getHoldTimeMs()
+recognizer.getRegisteredGestures()
 ```
 
 ### GestureDebug
@@ -111,7 +120,7 @@ recognizer.getRegisteredGestures() // [{ name: 'GEHE_VOR', label: 'Gehe vor' }, 
 | Feld | Bedeutung |
 | --- | --- |
 | `activeGesture` / `candidateGesture` | Bestätigte bzw. laufende Geste |
-| `candidateHoldMs` | Wie lange der Kandidat schon gehalten wird |
+| `candidateHoldMs` | Haltedauer des Kandidaten |
 | `cooldownMs` | Verbleibende Sperrzeit |
 | `armed` / `inNeutral` | Arming-Zustand |
 | `poseLostMs` | Dauer der aktuellen Tracking-Lücke (`0`, wenn Pose da ist) |
@@ -124,11 +133,7 @@ recognizer.getRegisteredGestures() // [{ name: 'GEHE_VOR', label: 'Gehe vor' }, 
 const unsubscribe = recognizer.on('gesture', (event) => {
   console.log(event.name, event.label, event.timestamp)
 })
-
-// später: unsubscribe()
 ```
-
-Events feuern, wenn eine Geste nach Hold-Zeit bestätigt wurde.
 
 ### Registrierte Gesten auflisten
 
@@ -138,25 +143,21 @@ for (const gesture of recognizer.getRegisteredGestures()) {
 }
 ```
 
-Nützlich für Hilfe-UI, Einstellungen oder Logging — ohne einzelne Gesture-Plugins importieren zu müssen.
-
 ## Öffentliche vs. interne API
 
-**Öffentlich** (über `src/gesture-library/index.ts`):
+**Öffentlich** (`src/gesture-library/index.ts`):
 
-- `GestureRecognizer`
-- `createDefaultGestureRecognizer`
-- Vordefinierte Gesten-Plugins
-- Typen: `GestureDefinition`, `GestureResult`, `GestureDebug`, …
+- `GestureRecognizer`, `createDefaultGestureRecognizer`
+- `GEHE_VOR`, `GEHE_ZURUECK`, `PAUSE_STOP`, `NAECHSTER_EINTRAG`
+- `NONE_GESTURE`
+- `DEFAULT_HOLD_TIME_MS`, `DEFAULT_COOLDOWN_MS`, `DEFAULT_POSE_LOSS_GRACE_MS`, `DEFAULT_SMOOTHING_ALPHA`
+- Typen: `GestureDefinition`, `GestureResult`, `GestureDebug`, `RecognizerConfig`, …
 
 **Intern** (nicht exportiert):
 
-- `features/pose.ts` — Landmark-Indizes, Feature-Extraktion
-- `smoothing.ts` — EMA-Glättung von Arm-Features
-- `stabilization.ts` — Hold, Grace, Cooldown, Arming, Pose-Verlust-Grace
-- `test-helpers.ts` — Synthetische Poses für Tests
+- `features/pose.ts`, `smoothing.ts`, `stabilization.ts`, `test-helpers.ts`
 
-Kamera/Pose-Inferenz liegt **nicht** in der Gesture Library, sondern im gemeinsamen Paket `@beiboot/pose-camera` (`src/pose-camera/`). Die Demos (`src/main.ts`, `apps/presentation-demo/`) sind separate Consumer.
+Kamera/Pose-Inferenz: `@beiboot/pose-camera`. How-to und Spiegelung: [gestures.md](gestures.md).
 
 ## Tests
 
@@ -165,4 +166,4 @@ npm test
 npm run test:watch
 ```
 
-Tests verwenden synthetische Landmark-Daten und prüfen Erkennung sowie Stabilisierung ohne Browser-DOM. Baseline-Kennzahlen: [baseline-measurement.md](baseline-measurement.md).
+Baseline: [baseline-measurement.md](baseline-measurement.md).

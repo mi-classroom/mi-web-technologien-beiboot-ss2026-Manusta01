@@ -65,7 +65,7 @@ Alle Gesten-Tests beginnen mit einer **Neutral-Sequenz** von 300 ms, damit `arme
 - PAUSE_STOP → `pauseStopPose()`
 - NAECHSTER_EINTRAG → `naechsterEintragPose()`
 
-**Messung:** `triggerAt - gestureStartAt` (ms). Enthält Arming (220 ms) + Hold (450 ms) = theoretisches Minimum ~670 ms.
+**Messung:** `triggerAt - gestureStartAt` (ms), ab Start der Gesten-Phase. Arming passiert bereits im 300‑ms-Warmup und zählt **nicht** zur TTG. Theoretisches Minimum ≈ `holdTimeMs` (450 ms); mit EMA-Aufwärmen etwas höher (gemessen ~464–480 ms).
 
 **Datei:** `__tests__/trigger-latency.test.ts`
 
