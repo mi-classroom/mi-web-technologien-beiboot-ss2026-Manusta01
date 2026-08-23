@@ -24,11 +24,11 @@ flowchart LR
 
 ## Zuständigkeiten
 
-| Schicht | Verantwortung |
-| --- | --- |
-| Apps | UI, Domänenlogik (Folien), Konsum der öffentlichen APIs |
-| `@beiboot/pose-camera` | Webcam, Inferenz, Landmark-Rendering |
-| `@beiboot/gesture-library` | Features, Stabilisierung, Gesten-Plugins, Events |
+| Schicht                    | Verantwortung                                           |
+| -------------------------- | ------------------------------------------------------- |
+| Apps                       | UI, Domänenlogik (Folien), Konsum der öffentlichen APIs |
+| `@beiboot/pose-camera`     | Webcam, Inferenz, Landmark-Rendering                    |
+| `@beiboot/gesture-library` | Features, Stabilisierung, Gesten-Plugins, Events        |
 
 ## Trade-offs (Kurz)
 

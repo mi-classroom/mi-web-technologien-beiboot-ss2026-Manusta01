@@ -1,12 +1,5 @@
 import { NormalizedLandmark } from '@mediapipe/tasks-vision'
-import {
-  LEFT_ELBOW,
-  LEFT_SHOULDER,
-  LEFT_WRIST,
-  RIGHT_ELBOW,
-  RIGHT_SHOULDER,
-  RIGHT_WRIST,
-} from './features/pose'
+import { LEFT_ELBOW, LEFT_SHOULDER, LEFT_WRIST, RIGHT_ELBOW, RIGHT_SHOULDER, RIGHT_WRIST } from './features/pose'
 
 function landmark(x: number, y: number, visibility = 1): NormalizedLandmark {
   return { x, y, z: 0, visibility }

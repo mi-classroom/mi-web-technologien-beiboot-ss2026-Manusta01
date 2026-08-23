@@ -46,11 +46,7 @@ function smoothArm(
   }
 }
 
-export function smoothFrameFeatures(
-  features: FrameFeatures,
-  state: SmoothingState,
-  alpha: number
-): FrameFeatures {
+export function smoothFrameFeatures(features: FrameFeatures, state: SmoothingState, alpha: number): FrameFeatures {
   const right = smoothArm(features.rightArm, state.rightDx, state.rightDy, alpha)
   const left = smoothArm(features.leftArm, state.leftDx, state.leftDy, alpha)
 

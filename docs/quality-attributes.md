@@ -15,11 +15,11 @@ Kurzreflexion im Sinne der Master-Kriterien ([notes-on-code](https://cnoss.githu
 
 ## Performance-Budget (bewusst)
 
-| Metrik      | Ziel / Beobachtung                                                               |
-| ----------- | -------------------------------------------------------------------------------- |
-| Inferenz    | niedrige zweistellige ms (Lite-Modell), siehe [data-quality.md](data-quality.md) |
-| Hold-Latenz | ~450–480 ms bis Trigger (Baseline K2–K4)                                         |
-| Auflösung   | ideal 1080p angefragt; für Gesten oft 720p ausreichend                           |
+| Metrik      | Ziel / Beobachtung                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------- |
+| Inferenz    | niedrige zweistellige ms (Lite-Modell), siehe [data-quality.md](data-quality.md)                |
+| Hold-Latenz | ~450–480 ms bis Trigger (Baseline K2–K4)                                                        |
+| Auflösung   | ideal 1080p angefragt; für Gesten oft 720p ausreichend                                          |
 | Bundle      | Vite Production-Build, typisch ein JS-Chunk ~150 kB / gzip ~46 kB (nach `npm run build` prüfen) |
 
 Kein hartes CI-Budget; Werte dienen der Einordnung und dem Video-/Review-Vergleich.

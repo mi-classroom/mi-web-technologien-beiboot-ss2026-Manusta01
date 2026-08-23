@@ -33,12 +33,12 @@ console.log(result.debug) // Debug-Metriken für UI/Logging
 
 `createDefaultGestureRecognizer()` registriert alle vier Standard-Gesten:
 
-| Name | Label | Default-`priority` |
-| --- | --- | --- |
-| `GEHE_VOR` | Gehe vor | 0 |
-| `GEHE_ZURUECK` | Gehe zurück | 0 |
-| `PAUSE_STOP` | Pause / Stop | 10 |
-| `NAECHSTER_EINTRAG` | Nächster Eintrag | 5 |
+| Name                | Label            | Default-`priority` |
+| ------------------- | ---------------- | ------------------ |
+| `GEHE_VOR`          | Gehe vor         | 0                  |
+| `GEHE_ZURUECK`      | Gehe zurück      | 0                  |
+| `PAUSE_STOP`        | Pause / Stop     | 10                 |
+| `NAECHSTER_EINTRAG` | Nächster Eintrag | 5                  |
 
 Bei Konflikten gewinnt die höhere Priorität.
 
@@ -59,17 +59,17 @@ const recognizer = new GestureRecognizer({
 
 Alle Optionen sind optional. Defaults aus `engine.ts` (exportiert als `DEFAULT_HOLD_TIME_MS`, `DEFAULT_COOLDOWN_MS`, `DEFAULT_POSE_LOSS_GRACE_MS`, `DEFAULT_SMOOTHING_ALPHA`).
 
-| Option | Default | Bedeutung |
-| --- | --- | --- |
-| `holdTimeMs` | 450 | Kandidat muss so lange stabil sein |
-| `cooldownMs` | 900 | Sperrzeit nach Trigger |
-| `candidateGraceMs` | 180 | Toleranz bei kurzzeitigem Gesten-Aussetzer |
-| `poseLossGraceMs` | 200 | Tracking-Lücke, in der Kandidat/Arming erhalten bleiben |
-| `smoothingAlpha` | 0.45 | EMA-Glättung für Arm-`dx`/`dy` (`0` ≈ aus) |
-| `neutralHoldMs` | 220 | Neutrale Pose vor Arming |
-| `neutralDxFactor` | 0.55 | Faktor für Neutral-Schwelle relativ zu `dynamicDxThreshold` |
-| `horizontalDxMin` / `shoulderSpanFactor` | 0.03 / 0.2 | Dynamische X-Schwelle |
-| `visibilityMin` / `elbowVisibilityMin` | 0.45 | Sichtbarkeitsgrenzen |
+| Option                                   | Default    | Bedeutung                                                   |
+| ---------------------------------------- | ---------- | ----------------------------------------------------------- |
+| `holdTimeMs`                             | 450        | Kandidat muss so lange stabil sein                          |
+| `cooldownMs`                             | 900        | Sperrzeit nach Trigger                                      |
+| `candidateGraceMs`                       | 180        | Toleranz bei kurzzeitigem Gesten-Aussetzer                  |
+| `poseLossGraceMs`                        | 200        | Tracking-Lücke, in der Kandidat/Arming erhalten bleiben     |
+| `smoothingAlpha`                         | 0.45       | EMA-Glättung für Arm-`dx`/`dy` (`0` ≈ aus)                  |
+| `neutralHoldMs`                          | 220        | Neutrale Pose vor Arming                                    |
+| `neutralDxFactor`                        | 0.55       | Faktor für Neutral-Schwelle relativ zu `dynamicDxThreshold` |
+| `horizontalDxMin` / `shoulderSpanFactor` | 0.03 / 0.2 | Dynamische X-Schwelle                                       |
+| `visibilityMin` / `elbowVisibilityMin`   | 0.45       | Sichtbarkeitsgrenzen                                        |
 
 ## Gesten registrieren
 
@@ -96,12 +96,12 @@ recognizer.register(meineGeste)
 
 ### GestureContext
 
-| Feld | Bedeutung |
-| --- | --- |
-| `armed` | Nutzer hat neutral gehalten, Trigger ist erlaubt |
-| `canDetect` | Cooldown ist abgelaufen |
-| `features` | Extrahierte Pose-Merkmale (Arme, Schwellen, Richtungen) |
-| `timestamp` | Aktueller Zeitstempel in ms |
+| Feld        | Bedeutung                                               |
+| ----------- | ------------------------------------------------------- |
+| `armed`     | Nutzer hat neutral gehalten, Trigger ist erlaubt        |
+| `canDetect` | Cooldown ist abgelaufen                                 |
+| `features`  | Extrahierte Pose-Merkmale (Arme, Schwellen, Richtungen) |
+| `timestamp` | Aktueller Zeitstempel in ms                             |
 
 Rückgabe `null` = kein Treffer. `GestureMatch` = Treffer.
 
@@ -117,15 +117,15 @@ recognizer.getRegisteredGestures()
 
 ### GestureDebug
 
-| Feld | Bedeutung |
-| --- | --- |
-| `activeGesture` / `candidateGesture` | Bestätigte bzw. laufende Geste |
-| `candidateHoldMs` | Haltedauer des Kandidaten |
-| `cooldownMs` | Verbleibende Sperrzeit |
-| `armed` / `inNeutral` | Arming-Zustand |
-| `poseLostMs` | Dauer der aktuellen Tracking-Lücke (`0`, wenn Pose da ist) |
-| `maxAbsDx` / `shoulderSpan` / `dynamicDxThreshold` | Feature-Metriken |
-| `rightArm` / `leftArm` | Arm-Features (ggf. geglättet) |
+| Feld                                               | Bedeutung                                                  |
+| -------------------------------------------------- | ---------------------------------------------------------- |
+| `activeGesture` / `candidateGesture`               | Bestätigte bzw. laufende Geste                             |
+| `candidateHoldMs`                                  | Haltedauer des Kandidaten                                  |
+| `cooldownMs`                                       | Verbleibende Sperrzeit                                     |
+| `armed` / `inNeutral`                              | Arming-Zustand                                             |
+| `poseLostMs`                                       | Dauer der aktuellen Tracking-Lücke (`0`, wenn Pose da ist) |
+| `maxAbsDx` / `shoulderSpan` / `dynamicDxThreshold` | Feature-Metriken                                           |
+| `rightArm` / `leftArm`                             | Arm-Features (ggf. geglättet)                              |
 
 ### Events
 
