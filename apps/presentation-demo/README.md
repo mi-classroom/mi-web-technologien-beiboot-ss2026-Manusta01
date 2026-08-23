@@ -2,14 +2,16 @@
 
 Eigenständige Demo-Anwendung, die die Gesture Library als externe Abhängigkeit nutzt. Steuert Folien und Bullet-Points per Körpergesten.
 
+**Live:** https://mi-classroom.github.io/mi-web-technologien-beiboot-ss2026-Manusta01/ (deployed aus `main`).
+
 ## Gesten-Mapping
 
-| Geste (Library) | Pose (kurz) | Aktion in der Demo |
-| --- | --- | --- |
-| Gehe vor | Arm seitlich halten (`dominantDx` positiv im Kamerabild) | Nächste Folie |
-| Gehe zurück | Arm zur anderen Seite halten | Vorherige Folie (Bullet-Index springt auf den **letzten** Bullet der Folie) |
-| Nächster Eintrag | Nur rechter Arm oben, links unten | Nächster Bullet; beim **letzten** Bullet → nächste Folie |
-| Pause / Stop | Beide Arme oben | Auto-Weiter pausieren / fortsetzen |
+| Geste (Library)  | Pose (kurz)                                              | Aktion in der Demo                                                          |
+| ---------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Gehe vor         | Arm seitlich halten (`dominantDx` positiv im Kamerabild) | Nächste Folie                                                               |
+| Gehe zurück      | Arm zur anderen Seite halten                             | Vorherige Folie (Bullet-Index springt auf den **letzten** Bullet der Folie) |
+| Nächster Eintrag | Nur rechter Arm oben, links unten                        | Nächster Bullet; beim **letzten** Bullet → nächste Folie                    |
+| Pause / Stop     | Beide Arme oben                                          | Auto-Weiter pausieren / fortsetzen                                          |
 
 Ausführliche Posen und Spiegelung: [docs/gestures.md](../../docs/gestures.md).
 

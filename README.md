@@ -2,6 +2,12 @@
 
 Studienprojekt (Master) zur browserbasierten Pose- und Gestenerkennung mit MediaPipe und einer eigenen Gesture Library.
 
+## Live-Demo
+
+**Gesten-Präsentation:** https://mi-classroom.github.io/mi-web-technologien-beiboot-ss2026-Manusta01/
+
+Die Seite wird bei jedem Push auf `main` automatisch über GitHub Pages deployed (Workflow `Deploy Demo App to Pages`).
+
 ## Hochschulkontext
 
 |                 |                                                     |
@@ -98,44 +104,6 @@ npm run build:presentation
 - [KI-Einsatz](docs/ai-usage.md)
 - [Drittanbieter-Lizenzen](THIRD_PARTY_LICENSES.md)
 - ADRs: [001](docs/adr/001-mediapipe-pose-landmarker.md) … [007](docs/adr/007-smoothing-and-disambiguation.md)
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-Präsentation (empfohlen für öffentliches Demo):
-
-```bash
-npm run build:presentation
-npm run preview --workspace=@beiboot/presentation-demo
-```
-
-Ausgabe: `dist/` bzw. `apps/presentation-demo/dist/`.
-
-## Deploy
-
-Statisches Hosting mit **HTTPS** (Kamera-API). Beispiel GitHub Pages:
-
-1. `npm run build:presentation`
-2. `apps/presentation-demo/dist/` veröffentlichen
-3. Bei Projekt-Seiten unter `/<repo>/`: in `apps/presentation-demo/vite.config.ts` `base: '/<repo>/'` setzen und neu bauen
-4. Öffentliche URL hier eintragen: _TODO nach Deploy_
-
-Alternativen: Cloudflare Pages, Netlify, Vercel — Build `npm run build:presentation`, Publish-Directory `apps/presentation-demo/dist`.
-
-## Abgabestand
-
-Nach finalem Stand auf `main`:
-
-```bash
-git tag -a v1.0.0-issue5 -m "Abgabe Issue #5 Weg B"
-git push origin v1.0.0-issue5
-```
-
-Optional GitHub Release mit derselben Tag-Version.
 
 ## Lizenz
 
