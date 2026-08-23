@@ -1,6 +1,6 @@
 import { NormalizedLandmark } from '@mediapipe/tasks-vision'
 import { GestureDebug } from '../gesture-library'
-import { reducePoseLandmarks } from '../landmarks/landmarks'
+import { reducePoseLandmarks } from '@beiboot/pose-camera'
 
 function serializeArmFeatures(arm: GestureDebug['rightArm']) {
   if (arm === null) return null
@@ -35,6 +35,7 @@ export function toRawDebugText(
         cooldownMs: Number(debug.cooldownMs.toFixed(1)),
         armed: debug.armed,
         inNeutral: debug.inNeutral,
+        poseLostMs: Number(debug.poseLostMs.toFixed(1)),
         maxAbsDx: Number(debug.maxAbsDx.toFixed(4)),
         shoulderSpan: Number(debug.shoulderSpan.toFixed(4)),
         dynamicDxThreshold: Number(debug.dynamicDxThreshold.toFixed(4)),

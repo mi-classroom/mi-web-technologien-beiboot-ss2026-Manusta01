@@ -3,7 +3,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default tseslint.config(
   {
-    ignores: ['node_modules/', 'dist/', 'build/', '.git/'],
+    ignores: ['node_modules/', 'dist/', 'build/', '.git/', 'apps/**/dist/'],
   },
   ...tseslint.configs.recommended,
   {

@@ -10,15 +10,18 @@ import {
   RegisteredGesture,
 } from './types'
 import { emptyFrameFeatures, extractFrameFeatures } from './features/pose'
+import { createSmoothingState, resetSmoothingState, smoothFrameFeatures, SmoothingState } from './smoothing'
 import {
   createStabilizationState,
-  resetStabilizationOnLostPose,
   StabilizationConfig,
   stepStabilization,
+  stepStabilizationOnPoseLoss,
 } from './stabilization'
 
 export const DEFAULT_HOLD_TIME_MS = 450
 export const DEFAULT_COOLDOWN_MS = 900
+export const DEFAULT_POSE_LOSS_GRACE_MS = 200
+export const DEFAULT_SMOOTHING_ALPHA = 0.45
 
 type ResolvedConfig = {
   holdTimeMs: number
@@ -30,6 +33,8 @@ type ResolvedConfig = {
   visibilityMin: number
   neutralDxFactor: number
   neutralHoldMs: number
+  poseLossGraceMs: number
+  smoothingAlpha: number
 }
 
 function resolveConfig(config: RecognizerConfig): ResolvedConfig {
@@ -43,6 +48,8 @@ function resolveConfig(config: RecognizerConfig): ResolvedConfig {
     visibilityMin: config.visibilityMin ?? 0.45,
     neutralDxFactor: config.neutralDxFactor ?? 0.55,
     neutralHoldMs: config.neutralHoldMs ?? 220,
+    poseLossGraceMs: config.poseLossGraceMs ?? DEFAULT_POSE_LOSS_GRACE_MS,
+    smoothingAlpha: config.smoothingAlpha ?? DEFAULT_SMOOTHING_ALPHA,
   }
 }
 
@@ -61,6 +68,7 @@ export class GestureRecognizer {
   private readonly gestureLabels = new Map<string, string>()
   private readonly handlers = new Map<string, Set<GestureHandler>>()
   private readonly state = createStabilizationState()
+  private readonly smoothingState: SmoothingState = createSmoothingState()
 
   constructor(config: RecognizerConfig = {}) {
     this.config = resolveConfig(config)
@@ -71,6 +79,7 @@ export class GestureRecognizer {
       neutralDxFactor: this.config.neutralDxFactor,
       neutralHoldMs: this.config.neutralHoldMs,
       candidateGraceMs: this.config.candidateGraceMs,
+      poseLossGraceMs: this.config.poseLossGraceMs,
     }
     this.featureConfig = {
       visibilityMin: this.config.visibilityMin,
@@ -114,17 +123,11 @@ export class GestureRecognizer {
 
   process(landmarks: PoseLandmarks | undefined, timestamp: number): GestureResult {
     if (!landmarks || landmarks.length === 0) {
-      resetStabilizationOnLostPose(this.state)
-      const features = emptyFrameFeatures(this.featureConfig)
-      const active = timestamp <= this.state.activeGestureUntil ? this.state.activeGesture : NONE_GESTURE
-      return this.buildResult(active, NONE_GESTURE, 0, features, {
-        armed: false,
-        inNeutral: false,
-        cooldownMs: Math.max(0, this.state.cooldownUntil - timestamp),
-      })
+      return this.handleMissingPose(timestamp)
     }
 
-    const features = extractFrameFeatures(landmarks[0], this.featureConfig)
+    const rawFeatures = extractFrameFeatures(landmarks[0], this.featureConfig)
+    const features = smoothFrameFeatures(rawFeatures, this.smoothingState, this.config.smoothingAlpha)
     const canDetect = timestamp >= this.state.cooldownUntil
     const ctx: GestureContext = {
       armed: this.state.armed,
@@ -145,6 +148,27 @@ export class GestureRecognizer {
     }
 
     return this.buildResult(step.activeGesture, step.candidateGesture, step.candidateHoldMs, features, step)
+  }
+
+  private handleMissingPose(timestamp: number): GestureResult {
+    const features = emptyFrameFeatures(this.featureConfig)
+    const step = stepStabilizationOnPoseLoss(this.state, timestamp, this.stabilizationConfig)
+
+    if (step.reset) {
+      resetSmoothingState(this.smoothingState)
+    }
+
+    if (step.triggered) {
+      this.emit('gesture', {
+        name: this.state.activeGesture,
+        label: this.labelFor(this.state.activeGesture),
+        timestamp,
+      })
+    }
+
+    const active = timestamp <= this.state.activeGestureUntil ? this.state.activeGesture : NONE_GESTURE
+
+    return this.buildResult(active, step.candidateGesture, step.candidateHoldMs, features, step)
   }
 
   private pickFrameGesture(ctx: GestureContext): string {
@@ -173,6 +197,7 @@ export class GestureRecognizer {
       armed: boolean
       inNeutral: boolean
       cooldownMs: number
+      poseLostMs?: number
     }
   ): GestureResult {
     const debug: GestureDebug = {
@@ -187,6 +212,7 @@ export class GestureRecognizer {
       dynamicDxThreshold: features.dynamicDxThreshold,
       rightArm: features.rightArm,
       leftArm: features.leftArm,
+      poseLostMs: step.poseLostMs ?? 0,
     }
 
     return { activeGesture, candidateGesture, debug }

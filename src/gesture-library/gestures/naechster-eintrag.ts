@@ -6,8 +6,10 @@ export const NAECHSTER_EINTRAG: GestureDefinition = {
   priority: 5,
   evaluate(ctx) {
     if (!ctx.canDetect || !ctx.armed) return null
-    const { rightArm, dynamicDyThreshold } = ctx.features
+    const { rightArm, leftWristAboveShoulder, rightWristAboveShoulder, dynamicDyThreshold } = ctx.features
     if (!rightArm?.visible) return null
+    if (leftWristAboveShoulder) return null
+    if (!rightWristAboveShoulder) return null
     if (rightArm.dy < -dynamicDyThreshold) {
       return { confidence: 1 }
     }

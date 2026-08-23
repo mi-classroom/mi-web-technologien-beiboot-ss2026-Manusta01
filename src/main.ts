@@ -2,8 +2,7 @@ import './style.css'
 import { PoseLandmarker, NormalizedLandmark } from '@mediapipe/tasks-vision'
 import { createDefaultGestureRecognizer, GestureDebug } from './gesture-library'
 import { drawGestureHud, updateGestureStatus } from './demo/gestureUi'
-import { createPoseLandmarker, detectPoseForVideo } from './landmarks/inference'
-import { drawPoseFrame } from './landmarks/render'
+import { createPoseLandmarker, detectPoseForVideo, drawPoseFrame, setupCamera } from '@beiboot/pose-camera'
 import { toRawDebugText } from './debug/rawFormatter'
 
 const video = document.querySelector<HTMLVideoElement>('#video')!
@@ -32,25 +31,7 @@ let lastDebug: GestureDebug = {
   dynamicDxThreshold: 0,
   rightArm: null,
   leftArm: null,
-}
-
-async function setupCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: {
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-      facingMode: 'user',
-    },
-    audio: false,
-  })
-
-  video.srcObject = stream
-
-  await new Promise<void>((resolve) => {
-    video.onloadedmetadata = () => resolve()
-  })
-
-  await video.play()
+  poseLostMs: 0,
 }
 
 async function setupPose() {
@@ -69,6 +50,7 @@ function updateMetrics(inferenceMs: number, landmarkCount: number, debug: Gestur
   const holdTimeMs = recognizer.getHoldTimeMs()
   const candidateLabel = recognizer.labelFor(debug.candidateGesture)
   const activeLabel = recognizer.labelFor(debug.activeGesture)
+  const poseLostLabel = debug.poseLostMs > 0 ? `${debug.poseLostMs.toFixed(0)} ms` : '—'
 
   metricsEl.innerHTML = `
     <div>FPS: ${fps.toFixed(1)}</div>
@@ -78,6 +60,7 @@ function updateMetrics(inferenceMs: number, landmarkCount: number, debug: Gestur
     <div>Aktive Geste: ${activeLabel}</div>
     <div>Kandidat: ${candidateLabel} (${debug.candidateHoldMs.toFixed(0)} / ${holdTimeMs} ms)</div>
     <div>Cooldown: ${debug.cooldownMs.toFixed(0)} ms</div>
+    <div>Pose-Verlust: ${poseLostLabel}</div>
     <div>Armed: ${debug.armed ? 'ja' : 'nein'}, Neutral: ${debug.inNeutral ? 'ja' : 'nein'}, max|dx|: ${debug.maxAbsDx.toFixed(3)}</div>
     <div>Schulterbreite: ${debug.shoulderSpan.toFixed(3)}, X-Schwelle: ${debug.dynamicDxThreshold.toFixed(3)}</div>
   `
@@ -113,7 +96,7 @@ async function renderLoop() {
 
 async function main() {
   try {
-    await setupCamera()
+    await setupCamera(video)
     await setupPose()
     requestAnimationFrame(renderLoop)
   } catch (error) {

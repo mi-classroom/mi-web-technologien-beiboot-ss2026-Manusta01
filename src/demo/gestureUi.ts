@@ -33,7 +33,7 @@ export function drawGestureHud(
 ): void {
   ctx.save()
   ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'
-  ctx.fillRect(12, 12, 500, 74)
+  ctx.fillRect(12, 12, 520, 96)
   ctx.fillStyle = '#ffffff'
   ctx.font = '20px sans-serif'
   ctx.fillText(`Aktive Geste: ${labelFn(debug.activeGesture)}`, 24, 40)
@@ -43,5 +43,6 @@ export function drawGestureHud(
     24,
     64
   )
+  ctx.fillText(`Pose-Verlust: ${debug.poseLostMs > 0 ? `${debug.poseLostMs.toFixed(0)} ms` : '—'}`, 24, 88)
   ctx.restore()
 }

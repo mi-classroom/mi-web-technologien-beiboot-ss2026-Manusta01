@@ -7,6 +7,7 @@ export type StabilizationConfig = {
   neutralDxFactor: number
   neutralHoldMs: number
   candidateGraceMs: number
+  poseLossGraceMs: number
 }
 
 export type StabilizationState = {
@@ -18,6 +19,7 @@ export type StabilizationState = {
   activeGesture: string
   activeGestureUntil: number
   cooldownUntil: number
+  poseLostAt: number
 }
 
 export function createStabilizationState(): StabilizationState {
@@ -30,6 +32,7 @@ export function createStabilizationState(): StabilizationState {
     activeGesture: NONE_GESTURE,
     activeGestureUntil: 0,
     cooldownUntil: 0,
+    poseLostAt: 0,
   }
 }
 
@@ -41,6 +44,7 @@ export type StabilizationStepResult = {
   armed: boolean
   inNeutral: boolean
   triggered: boolean
+  poseLostMs: number
 }
 
 export function isInNeutral(features: FrameFeatures, config: StabilizationConfig): boolean {
@@ -50,6 +54,24 @@ export function isInNeutral(features: FrameFeatures, config: StabilizationConfig
   return horizontallyNeutral && !armsRaised
 }
 
+function triggerCandidate(state: StabilizationState, timestamp: number, config: StabilizationConfig): boolean {
+  const candidateHoldMs = timestamp - state.candidateSince
+  if (state.candidateGesture === NONE_GESTURE || candidateHoldMs < config.holdTimeMs) {
+    return false
+  }
+
+  state.activeGesture = state.candidateGesture
+  state.activeGestureUntil = timestamp + config.cooldownMs
+  state.cooldownUntil = timestamp + config.cooldownMs
+  state.armed = false
+  state.neutralSince = 0
+  state.candidateGesture = NONE_GESTURE
+  state.candidateSince = 0
+  state.candidateLostAt = 0
+  state.poseLostAt = 0
+  return true
+}
+
 export function stepStabilization(
   state: StabilizationState,
   frameGesture: string,
@@ -57,6 +79,8 @@ export function stepStabilization(
   timestamp: number,
   config: StabilizationConfig
 ): StabilizationStepResult {
+  state.poseLostAt = 0
+
   const canDetect = timestamp >= state.cooldownUntil
   const inNeutral = isInNeutral(features, config)
 
@@ -86,22 +110,9 @@ export function stepStabilization(
     }
   }
 
-  const candidateHoldMs = state.candidateGesture === NONE_GESTURE ? 0 : timestamp - state.candidateSince
-
-  let triggered = false
-  if (state.candidateGesture !== NONE_GESTURE && candidateHoldMs >= config.holdTimeMs) {
-    state.activeGesture = state.candidateGesture
-    state.activeGestureUntil = timestamp + config.cooldownMs
-    state.cooldownUntil = timestamp + config.cooldownMs
-    state.armed = false
-    state.neutralSince = 0
-    state.candidateGesture = NONE_GESTURE
-    state.candidateSince = 0
-    state.candidateLostAt = 0
-    triggered = true
-  }
-
+  const triggered = triggerCandidate(state, timestamp, config)
   const active = timestamp <= state.activeGestureUntil ? state.activeGesture : NONE_GESTURE
+  const candidateHoldMs = state.candidateGesture === NONE_GESTURE ? 0 : timestamp - state.candidateSince
 
   return {
     activeGesture: active,
@@ -111,12 +122,66 @@ export function stepStabilization(
     armed: state.armed,
     inNeutral,
     triggered,
+    poseLostMs: 0,
+  }
+}
+
+export type PoseLossStepResult = StabilizationStepResult & {
+  withinGrace: boolean
+  reset: boolean
+}
+
+export function stepStabilizationOnPoseLoss(
+  state: StabilizationState,
+  timestamp: number,
+  config: StabilizationConfig
+): PoseLossStepResult {
+  if (state.poseLostAt === 0) {
+    state.poseLostAt = timestamp
+  }
+
+  const poseLostMs = timestamp - state.poseLostAt
+
+  if (poseLostMs <= config.poseLossGraceMs) {
+    const candidateHoldMs = state.candidateGesture === NONE_GESTURE ? 0 : timestamp - state.candidateSince
+    const triggered = triggerCandidate(state, timestamp, config)
+    const active = timestamp <= state.activeGestureUntil ? state.activeGesture : NONE_GESTURE
+
+    return {
+      activeGesture: active,
+      candidateGesture: state.candidateGesture,
+      candidateHoldMs,
+      cooldownMs: Math.max(0, state.cooldownUntil - timestamp),
+      armed: state.armed,
+      inNeutral: false,
+      triggered,
+      poseLostMs,
+      withinGrace: true,
+      reset: false,
+    }
+  }
+
+  resetStabilizationOnLostPose(state)
+
+  return {
+    activeGesture: NONE_GESTURE,
+    candidateGesture: NONE_GESTURE,
+    candidateHoldMs: 0,
+    cooldownMs: Math.max(0, state.cooldownUntil - timestamp),
+    armed: false,
+    inNeutral: false,
+    triggered: false,
+    poseLostMs,
+    withinGrace: false,
+    reset: true,
   }
 }
 
 export function resetStabilizationOnLostPose(state: StabilizationState): void {
   state.candidateGesture = NONE_GESTURE
+  state.candidateSince = 0
   state.candidateLostAt = 0
   state.armed = false
   state.neutralSince = 0
+  state.poseLostAt = 0
 }

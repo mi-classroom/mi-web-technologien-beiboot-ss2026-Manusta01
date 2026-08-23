@@ -2,10 +2,10 @@ import { GestureDebug } from '@beiboot/gesture-library'
 import { PresentationView } from '../presentation/PresentationController'
 
 const GESTURE_ACTIONS: Record<string, string> = {
-  GEHE_VOR: 'Nächste Folie',
-  GEHE_ZURUECK: 'Vorherige Folie',
-  PAUSE_STOP: 'Auto-Weiter pausieren / fortsetzen',
-  NAECHSTER_EINTRAG: 'Nächster Bullet-Point',
+  GEHE_VOR: 'Arm seitlich halten → nächste Folie',
+  GEHE_ZURUECK: 'Andere Seite halten → vorherige Folie',
+  PAUSE_STOP: 'Beide Arme oben → Auto-Weiter pausieren / fortsetzen',
+  NAECHSTER_EINTRAG: 'Nur rechter Arm oben → nächster Bullet (letzter → nächste Folie)',
 }
 
 export function renderGestureHelp(
@@ -84,5 +84,6 @@ export function updateMetrics(
     <div>Kandidat: ${labelFn(debug.candidateGesture)} (${debug.candidateHoldMs.toFixed(0)} / ${holdTimeMs} ms)</div>
     <div>Armed: ${debug.armed ? 'ja' : 'nein'}</div>
     <div>Cooldown: ${debug.cooldownMs.toFixed(0)} ms</div>
+    <div>Pose-Verlust: ${debug.poseLostMs > 0 ? `${debug.poseLostMs.toFixed(0)} ms` : '—'}</div>
   `
 }

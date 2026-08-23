@@ -1,14 +1,18 @@
 import { FilesetResolver, PoseLandmarker, PoseLandmarkerResult } from '@mediapipe/tasks-vision'
 
+/** Pinned to the resolved npm version (see package-lock.json). Do not use @latest. */
+const MEDIAPIPE_TASKS_VISION_VERSION = '0.10.35'
+
+const WASM_CDN = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MEDIAPIPE_TASKS_VISION_VERSION}/wasm`
+const POSE_MODEL_URL =
+  'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'
+
 export async function createPoseLandmarker(): Promise<PoseLandmarker> {
-  const vision = await FilesetResolver.forVisionTasks(
-    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-  )
+  const vision = await FilesetResolver.forVisionTasks(WASM_CDN)
 
   return PoseLandmarker.createFromOptions(vision, {
     baseOptions: {
-      modelAssetPath:
-        'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+      modelAssetPath: POSE_MODEL_URL,
     },
     runningMode: 'VIDEO',
     numPoses: 1,

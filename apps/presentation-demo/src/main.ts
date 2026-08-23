@@ -1,10 +1,9 @@
 import './style.css'
 import { createDefaultGestureRecognizer } from '@beiboot/gesture-library'
-import { createPoseLandmarker, detectPoseForVideo, setupCamera } from './camera/posePipeline'
+import { createPoseLandmarker, detectPoseForVideo, drawPoseFrame, setupCamera } from '@beiboot/pose-camera'
 import { PresentationController } from './presentation/PresentationController'
 import { SLIDES } from './presentation/slides'
 import { renderGestureHelp, renderSlide, updateGestureStatus, updateMetrics } from './ui/render'
-import { drawPoseFrame } from './camera/render'
 
 const video = document.querySelector<HTMLVideoElement>('#video')!
 const canvas = document.querySelector<HTMLCanvasElement>('#overlay')!
@@ -51,7 +50,10 @@ async function renderLoop(): Promise<void> {
 
     updateGestureStatus(gestureStatusEl, debug, recognizer.labelFor.bind(recognizer), recognizer.getHoldTimeMs())
     updateMetrics(metricsEl, fps, inferenceMs, debug, recognizer.labelFor.bind(recognizer), recognizer.getHoldTimeMs())
-    drawPoseFrame(ctx, canvas, video, result.landmarks)
+    drawPoseFrame(ctx, canvas, video, result.landmarks, {
+      backgroundColor: '#02050a',
+      landmarkColor: '#7cf0ff',
+    })
   }
 
   requestAnimationFrame(renderLoop)
